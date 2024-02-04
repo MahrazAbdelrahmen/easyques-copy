@@ -6,7 +6,7 @@ function Team(params) {
     gap-[50px] content-end justify-items-center "
     >
       <img
-        src="../Assets/ourteam.png"
+        src="../Assets/OUR_TEAM.svg"
         alt=""
         className="w-[40vw] md:w-[20vw]"
       />
@@ -14,7 +14,7 @@ function Team(params) {
         <div className="grid justify-center justify-items-center gap-5">
           {" "}
           <img
-            src="../Assets/issam.png"
+            src="../Assets/ISSAM.svg"
             alt=""
             className="md:h-[15vw] h-[30vw]"
           />
@@ -23,7 +23,7 @@ function Team(params) {
         <div className="grid justify-center justify-items-center gap-5">
           {" "}
           <img
-            src="../Assets/rania.png"
+            src="../Assets/RANIA.svg"
             alt=""
             className="md:h-[15vw] h-[30vw]"
           />
@@ -32,7 +32,7 @@ function Team(params) {
         <div className="grid justify-center justify-items-center gap-5">
           {" "}
           <img
-            src="../Assets/issam.png"
+            src="../Assets/ISSAM.svg"
             alt=""
             className="md:h-[15vw] h-[30vw]"
           />
@@ -40,7 +40,7 @@ function Team(params) {
         </div>
         <div className="grid justify-center justify-items-center gap-5">
           <img
-            src="../Assets/yasmine.png"
+            src="../Assets/YASMINE.svg"
             alt=""
             className="md:h-[15vw] h-[30vw]"
           />
@@ -48,7 +48,7 @@ function Team(params) {
         </div>
         <div className="grid justify-center justify-items-center gap-5">
           <img
-            src="../Assets/kenza.png"
+            src="../Assets/KENZA.svg"
             alt=""
             className="md:h-[15vw] h-[30vw]"
           />
@@ -56,7 +56,7 @@ function Team(params) {
         </div>{" "}
         <div className="grid justify-center justify-items-center gap-5">
           <img
-            src="../Assets/issam.png"
+            src="../Assets/ISSAM.svg"
             alt=""
             className="md:h-[15vw] h-[30vw]"
           />

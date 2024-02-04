@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../Styles/Login.css";
 import { NavLink } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
+import { useNavigate } from 'react-router-dom';
 
 import "react-toastify/dist/ReactToastify.css";
 function Register() {
@@ -61,6 +62,25 @@ function Register() {
       console.error('Error:', error);
   });
 }
+
+const navigate = useNavigate();
+
+  const handleSignUp = async () => {
+    try {
+      console.log('h');
+      await signUp();
+      console.log('hl');
+      // If signUp is successful, navigate to ./Home
+      navigate('.././Home');
+    } catch (error) {
+      // Handle errors
+      console.error('Error happened:', error);
+      // Notify user about the error
+      // Assuming you have a `notify` function
+      notify();
+      toast.error('ERROR HAPPENED: ' + error);
+    }
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -181,14 +201,14 @@ function Register() {
             </div>{" "}
             <div className="grid content-center justify-items-center w-full h-20">
              
-                <button onClick={() => { try{ console.log("h"); signUp(); console.log("hl"); }catch (error) {notify(); toast.error("ERROR HAPPENED  : " + error);}}}
-                  type="submit"
-                  id="sub_button"
-                  className="login-button  bg-grey px-[8rem] py-[0.5rem] cursor-pointer"
-                >
-                  {" "}
-                  Sign up
-                </button>
+            <button
+      onClick={handleSignUp}
+      type="submit"
+      id="sub_button"
+      className="login-button bg-grey px-[8rem] py-[0.5rem] cursor-pointer"
+    >
+      Sign up
+    </button>
             
             </div>{" "}
           </form>

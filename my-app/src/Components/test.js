@@ -12,7 +12,7 @@ const RandomizeText = ({ initialText, delay, resetDelay }) => {
     }
   }, [randomizeText]);
 
-  return <div ref={targetRef}>{initialText}</div>;
+  return <div className='text-5xl' ref={targetRef}>{initialText}</div>;
 };
 
 export default RandomizeText;

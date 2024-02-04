@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "../Styles/Navbar.css";
-import { NavLink } from "react-router-dom";
 import { CiPhone } from "react-icons/ci";
 import { Link, useLocation } from "react-router-dom";
 import { Link as ScrollLink, animateScroll as scroll } from "react-scroll";
@@ -53,17 +52,19 @@ function Navbar_landing(params) {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+  
 
   return (
+
     <div className="flex  w-screen items-center justify-around h-20 bg-grey">
-      <div className="logo-igl flex   items-center content-center">
-        <NavLink to="/">
-          <img className="logo-easy  h-12" src="./Assets/logo.png" alt="" />
-        </NavLink>
-        <NavLink to="/">
-          <img className="logo-nom ml-2" src="./Assets/nom.png" alt="" />
-        </NavLink>
-      </div>
+      <div className="logo-igl flex items-center content-center">
+      <Link to="./">
+        <img className="logo-easy h-12" src="./Assets/logo.png" alt="" />
+      </Link>
+      <Link to="./">
+        <img className="logo-nom ml-2" src="./Assets/nom.png" alt="" />
+      </Link>
+    </div>
 
       <div className=" hidden md:flex  justify-between items-center object-none object-center ml-8 ">
         <ul className="flex gap-5">
@@ -79,6 +80,7 @@ function Navbar_landing(params) {
               Home
             </ScrollLink>
           </li>
+
           <li className="cursor-pointer hover:text-blue hover:underline">
             <ScrollLink
               to="team"
@@ -105,8 +107,10 @@ function Navbar_landing(params) {
           </li>
         </ul>
       </div>
-      <button className="border-2 border-blue rounded-xl px-5 py-2 hidden md:grid">
-        <p className="text-blue">Register now !</p>
+      <button className="border-2 border-blue rounded-xl px-5 py-2 hidden md:grid hover:bg-darkgrey">
+      <Link to="./Register" className="text-blue">
+           Register now !
+          </Link>
       </button>
       <div className=" grid md:hidden">
         <button onClick={respoON}>

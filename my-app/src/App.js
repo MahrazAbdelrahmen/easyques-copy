@@ -19,6 +19,11 @@ import ModalEditJSON from "./Components/model_edit_json.js";
 import Moderators from './pages/moderators.js'
 import Landing from './pages/Landing.js'
 import SearchResult from "./pages/SearchResult.js";
+import SearchResults from "./pages/Search_result.js";
+import Seemore from "./pages/See_more.js";
+import Reg_land from "./pages/Reg_land.js";
+import Log_land from "./pages/Log_land.js";
+import Accueil from "./pages/Home";
 function App() {
   return (
 
@@ -28,6 +33,17 @@ function App() {
     <Router>
       <Routes>
         <Route path="/User" element={<Favorites />}></Route>
+        <Route path="/1" element={<Seemore />}></Route>
+   {} 
+        <Route path="/2" element={<SearchResult />}></Route>
+        <Route path="/3" element={<SearchResults />}></Route>
+        <Route path="/4" element={<Register_page />}></Route>
+        <Route path="/5" element={<Reg_land />}></Route>
+        <Route path="/7" element={<cleanUpData />}></Route>
+        <Route path="/8" element={< ModEditPage/>}></Route>
+        <Route path="/9" element={< Log_land/>}></Route>
+
+{}
         <Route path="/Admin" element={<Moderators/>}></Route>
         <Route path="/Moderateur" element={<ModeratorForm />}></Route>
         <Route path="/edit-article/:articleId" element={<ModEditPage></ModEditPage>} />
@@ -40,7 +56,7 @@ function App() {
         <Route path="/Register" element={<Register_page />}></Route>
         <Route path="/Search_result" element={<SearchResult />}></Route>
         <Route path="/ModPage" element={<ModPage />}></Route>
-        <Route path="/Home" element={<ModPage />}></Route>
+        <Route path="/Home" element={<Accueil />}></Route>
       </Routes>
     </Router>
 
