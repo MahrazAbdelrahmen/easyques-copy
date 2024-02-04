@@ -1,78 +1,83 @@
 
 import React, { useState } from 'react'
 import '../Styles/Article_Container.css'
-import Hyphenated from 'react-hyphen';
+import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis ,faCircle,faHeart} from "@fortawesome/free-solid-svg-icons";
+import { faEllipsis, faCircle, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { BsCloudDownload } from "react-icons/bs";
 
-const Article = ({ articleData }) => {
-  const { date, title, authors, institutions, url,fav} = articleData;
-  const [dropdownVisible,setDropdownVisible]=useState();
+const Article = ({ key, articleData }) => {
+  const navigator = useNavigate();
+  const { title, authors, url, institutions, date, id } = articleData;
+  const [dropdownVisible, setDropdownVisible] = useState();
   //favorite est un booleen qui prend la veulr false:si article non ajoute aux favorites et true:si article ajoute aux favorites
-const [favorite, setFavorite] = useState(articleData.fav);
+  const [favorite, setFavorite] = useState(false);
 
 
-  const dropdownOff=(event)=>{
-setDropdownVisible(false);
+  const dropdownOff = (event) => {
+    setDropdownVisible(false);
   }
 
-   const toggleDropdown = () => {
-    setDropdownVisible(!dropdownVisible); 
+  const toggleDropdown = () => {
+    setDropdownVisible(!dropdownVisible);
   };
-  const toggleFavorite=()=>{
-        articleData.fav = !favorite ? '1' : '0';
+  const toggleFavorite = () => {
+    articleData.fav = !favorite ? '1' : '0';
 
     setFavorite(!favorite);
-     console.log("Liked:", favorite);
+    console.log("Liked:", favorite);
   }
   return (
-    <Hyphenated>
+
     <div className='overflow-wrap break-word mx-4 md:mx-8 lg:mx-16 xl:mx-24  p-5 rounded-lg border-2 border-lightStartD bg-grey'>
       <div className='mod-article-row'>
         <div className="article-row-left flex gap-5 items-center ">
           <time className='font-Montserrat'>{date}</time>
-                      <NavLink to='/See_more' >
+          <NavLink to='/See_more' >
 
-          <div className="see-more flex  items-center gap-2 ">
-            <FontAwesomeIcon icon={faCircle} />
-            
-             <p className='hover:text-blue hover:underline cursor-pointer'>See more</p>
+            <div className="see-more flex  items-center gap-2 ">
+              <FontAwesomeIcon icon={faCircle} />
+
+              <p className='hover:text-blue hover:underline cursor-pointer'>See more</p>
             </div>
-                         </NavLink>
+          </NavLink>
 
 
-          </div>
+        </div>
         <div className='mod-article-dropdown gap-5 flex items-center'>
-          <button><BsCloudDownload size='25px'/></button>
+          <button><BsCloudDownload size='25px' /></button>
 
-        {favorite ? (
-                        <img src="./Assets/white-heart.png" className='h-6 cursor-pointer' alt="" onClick={toggleFavorite} />
+          {favorite ? (
+            <img src="./Assets/white-heart.png" className='h-6 cursor-pointer' alt="" onClick={toggleFavorite} />
 
-            ) : (
-              <img src="./Assets/heart.png" className='h-6 cursor-pointer' alt="" onClick={toggleFavorite} />
-            )}
+          ) : (
+            <img src="./Assets/heart.png" className='h-6 cursor-pointer' alt="" onClick={toggleFavorite} />
+          )}
 
-           <button onClick={toggleDropdown} className='cursor-pointer'>
-          <FontAwesomeIcon icon={faEllipsis} size='2xl'  />
+          <button onClick={toggleDropdown} className='cursor-pointer'>
+            <FontAwesomeIcon icon={faEllipsis} size='2xl' />
           </button>
-         {dropdownVisible && ( 
-          <div className='mod-article-dropdown-content '>
-            <div className='mod_article_text'>
-              <a href='#'>Download</a>
-            </div>
-            <div className='mod_article_text'>
-              <a href='#' className='text-red-500'>
-                See more
-              </a>
-            </div>
-          </div>)}
+          {dropdownVisible && (
+            <div className='mod-article-dropdown-content '>
+              <div className='mod_article_text'>
+                <a href='#'>Download</a>
+              </div>
+              <div className='mod_article_text'>
+                <button 
+                onClick={() =>{
+                    navigator(`/see-more/${id}`)
+                }} 
+                href='#' className='text-red-500'>
+                  See more
+                </button>
+              </div>
+            </div>)}
         </div>
       </div>
-        <p className=' hyphens-auto mt-5 ml-5 font-Montserrat text-green font-bold text-2xl '>
-          {title}
-        </p>
+      <p className=' hyphens-auto mt-5 ml-5 font-Montserrat text-green font-bold text-2xl '>
+        {title}
+      </p>
       <div className='mt-5 ml-5 font-Montserrat font-bold text-xl'>
         {/* Authors */}
         {authors.map((author, index) => (
@@ -109,7 +114,7 @@ setDropdownVisible(false);
         </a>
       </div>
     </div>
-    </Hyphenated>
+
   )
 }
 

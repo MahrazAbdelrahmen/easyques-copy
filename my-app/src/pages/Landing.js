@@ -1,9 +1,9 @@
-{/** 10/10 */}
 import React from "react";
 import Home_landing from "../Components/Home_landing";
 import Team from "../Components/Team";
 import Contact from "../Components/Contact";
 import Navbar_landing from "../Components/Navbar_landing";
+import { TypeAnimation } from 'react-type-animation';
 
 function Landing(params) {
   return (

@@ -33,8 +33,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/User" element={<Favorites />}></Route>
-        <Route path="/1" element={<Seemore />}></Route>
-   {} 
+        <Route path="/see-more/:articleId" element={<Seemore></Seemore>} />
         <Route path="/2" element={<SearchResult />}></Route>
         <Route path="/3" element={<SearchResults />}></Route>
         <Route path="/4" element={<Register_page />}></Route>

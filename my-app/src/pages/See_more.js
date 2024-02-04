@@ -1,27 +1,42 @@
 import React from "react";
 import Navbar from "../Components/Navbar";
 import Seemore_compo from "../Components/Seemore_compo";
-function Seemore(params) {
-  const articleData = {
-    date: "12/12/2023",
-    title:
-      "Pharmacogenetic Risk Scores for Perindopril Clinical and Cost Effectiveness in Stable Coronary Artery Disease: When Are We Ready to Do?",
-    authors: ["Author 1", "Author 2", "Author 3", "Author 4"],
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import ArticleAPI from "../api/article_api";
 
-    institutions: [
-      "BIG UNIVERSITY OF SOMETHING SOMETHING VERY BIG",
-      "Institution 2",
-      "Institution 3",
-      "Institution 4",
-    ],
+function Seemore() {
 
-    url: "http://ictinnovations.org/2010",
-  };
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(null);
+  const id_key = useParams();
+  const articleID = parseInt(id_key["articleId"], 10);
+
+  useEffect(() => {
+    const fetchArticleData = async () => {
+      try {
+        const data = await ArticleAPI.fetchArticle(articleID);
+        setData(data);
+        console.log(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching article data:', error);
+      }
+    };
+
+    fetchArticleData();
+  }, [articleID]);
 
   return (
     <div>
       <Navbar></Navbar>
-      <Seemore_compo articleData={articleData}></Seemore_compo>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        data &&
+        <Seemore_compo articleData={data} pdfId={articleID}></Seemore_compo>
+      )}
+
     </div>
   );
 }

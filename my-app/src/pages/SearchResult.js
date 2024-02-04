@@ -41,7 +41,7 @@ function SearchResult(props) {
     console.log(keyWords, author, institutions)
     
     API =
-      `http://127.0.0.1:8000/article/search-articles/?authors=${author}&title=${query}&institutions=${institutions}&keywords=${keyWords}`
+      `http://127.0.0.1:8000/article/search-articles-unpublished/?authors=${author}&title=${query}&institutions=${institutions}&keywords=${keyWords}`
     try {
       const response = await axios.get(
         API
@@ -63,7 +63,7 @@ function SearchResult(props) {
   const search_article = async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/article/search-articles/?authors=${query}&title=${query}&institutions=${query}&keywords=${query}`
+        `http://127.0.0.1:8000/article/search-articles-unpublished/?authors=${query}&title=${query}&institutions=${query}&keywords=${query}`
       );
       const array = response.data["results"].map((element) => cleanUpData(element))
 
