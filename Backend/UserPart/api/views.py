@@ -1,22 +1,22 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
-from moderator.util import Token_moderator
-from UserPart.models import UserProfile
+from django.contrib.auth import  logout
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password, make_password
 from django.shortcuts import get_object_or_404
-from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from rest_framework.authtoken.models import Token
 from article.serializers import *
 from elasticsearch_dsl.connections import connections
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-
+from django.contrib.auth import authenticate, login
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework import status
+from UserPart.models import UserProfile
+from moderator.util import TokenModerator
 from moderator.models import Moderator
 
 connections.create_connection(alias='default', hosts=['http://elastic:ar*==+FV5XfBWpjwDy1p@localhost:9200'])
@@ -35,10 +35,45 @@ def check_user_type(request):
         return Response({'value': 2})
 
 
+
 @api_view(['POST'])
 @csrf_protect
 @csrf_exempt
 def login_user(request):
+    """
+    Log in a user or moderator and return an authentication token.
+
+    This function authenticates a user or moderator based on the provided
+    username (or email) and password. It returns an authentication token
+    upon successful login.
+
+    Args:
+        request (Request): The Django request object containing user credentials.
+
+    Returns:
+        Response: A JSON response containing the authentication result and token.
+
+    Raises:
+        None
+
+    Example:
+    ```python
+    # Sample request data
+    request_data = {'username': 'john_doe', 'password': 'secret_password'}
+    response = login_user(request_data)
+    print(response.data)
+    ```
+
+    Response Example:
+    ```json
+    {'message': 'Login successful', 'type': 'user', 'token': 'generated_token', 'first_name': 'John', 'last_name': 'Doe'}
+    ```
+
+    Status Codes:
+        - 200: Successful login
+        - 400: Bad request (missing username or password)
+        - 401: Unauthorized (incorrect username, password, or both)
+    """
     token = ' '
     username = request.data.get('username')
     password = request.data.get('password')
@@ -47,48 +82,43 @@ def login_user(request):
         return Response({'error': 'Both username and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-     user_profile = UserProfile.objects.get(user__username=username)
-     user = authenticate(request, username=username, password=password)
-     value = 1 
-    
-    except UserProfile.DoesNotExist:
-       
+        # Check if the user is a UserProfile
+        UserProfile.objects.get(user__username=username)
+        user = authenticate(request, username=username, password=password)
+        user_type = 'user'
+
+    except ObjectDoesNotExist:
+
         user_profile = Moderator.objects.get(email=username)
-       
-        if(user_profile is not None):
-         
-         
-            user = authenticate(request, email= username, password=password)
-            value = 2
+
+        if user_profile is not None:
+            user = authenticate(request, email=username, password=password)
+            user_type = 'moderator'
         else:
-            value = 3
-            return Response({'error': 'Incorrect username or password.'}, status=status.HTTP_401_UNAUTHORIZED) ;
-   
-    token = ' '
+            return Response({'error': 'Incorrect username or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+
     if user is not None:
         login(request, user)
 
         # Generate or retrieve the user's token
-        if(value == 1):
-            #user 
-           token, created = Token.objects.get_or_create(user=user)
-           token = str(token.key)
-        
+        if user_type == 'user':
+            token, created = Token.objects.get_or_create(user=user)
+            token = str(token.key)
         else:
-            if(value == 2):
-            #moderateur
-             token =  Token_moderator.generate_token_for_moderator(moderator_email=username)
-            
-        # You can include the token in the response if needed
+            # If the user is a moderator
+            token = TokenModerator.generate_token_for_moderator(moderator_email=username)
+
+        # Include the token in the response
         first_name = user.first_name
         last_name = user.last_name
         message = "Login successful"
         return Response({'message': message, 'type': user_type,
-                         'token': str(token.key), 'first_name': first_name,
+                         'token': str(token), 'first_name': first_name,
                          'last_name': last_name}, status=status.HTTP_200_OK)
     else:
         message = "Incorrect password"
         return Response({'error': message}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 
 @api_view(['POST'])

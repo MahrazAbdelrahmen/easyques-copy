@@ -4,6 +4,38 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from Backend.permissions import MODS_ADMIN_NO_USER_PERM, MODS_PERMISSION
 
+"""
+Represents A Util for handling Moderator class attributes.
+
+Class Name: ModAttributesUtil
+
+Methods:
+    - static uuid4 generate_unique_mod_id(void): generates a uuid4 as mod_id
+    - static string password(void) : generates a hash random password
+
+Inheritance:
+    - This class does not inherit.
+
+Usage Example: 
+    - call ModAttributesUtil.generate_unique_mod_id() -> 83aad6d7-37eb-4c00-924d-ef7498d9528b
+
+Relationships:
+- Moderator Uses This Class for handling some of its attributes operations.
+"""
+
+
+class ModAttributesUtil:
+
+    @staticmethod
+    def generate_unique_mod_id():
+        unique_id = uuid.uuid4()
+        print("/" * 100)
+        print(unique_id)
+        return unique_id
+
+    @staticmethod
+    def password(length=30):
+        return make_password(get_random_string(length))
 
 class Moderator(AbstractBaseUser):
     """
