@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink , useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../Styles/Login.css";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -16,7 +16,7 @@ function Login() {
     try {
       var username = document.getElementById('emil1').value;
       var password = document.getElementById('pwd1').value;
-     
+
       if (document.getElementById('emil1').value == null) {
         throw Error("UserName Is NULL");
       }
@@ -36,7 +36,7 @@ function Login() {
       body: JSON.stringify({
         username: username,
         password: password,
-       
+
       })
     })
       .then(response => {
@@ -52,36 +52,32 @@ function Login() {
 
           notify(); toast.error(data.messafe);
           document.cookie = `token=${data.token}; path=/; SameSite=None; Secure`;
-          
+
           var tokenValue = getCookie('token');
-         
-          // Éventuellement, rediriger vers une autre page ou effectuer d'autres actions
-         
-          console.log(data)
-            // redirection
           
-        
-          if (Number(data.type) == 1) {
+
+
+          if (data.type == 'user') {
             // utilisateur normale
-            navigate('/User')
+            navigate('/Profile')
           }
-          else{
-            if (data.type == 2) {
+          else {
+            if (data.type == 'moderator') {
               // moderateur
-            
+
               navigate('/Moderateur')
             }
-            else{
+            else {
               //  admin
               navigate('/Admin')
             }
           }
-         
+
         }
       })
       .catch(error => {
         console.log('Erreur:', error);
-        
+
       });
 
 

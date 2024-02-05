@@ -8,8 +8,11 @@
     deleteArticleEndPoint:'/article/up_article/delete/',
     validateArticleEndPoint:'/article/up_article/validate/',
     updateArticleEndPoint:'/article/up_article/update/',
-    uploadDrive: '/myapp/uploadDrive/'
+    uploadDrive: '/myapp/uploadDrive/',
+    getUserDataEndpoint: '/api/get-data',
+    logoutEndPoint: '/api/logout/',
   };
   
   export default apiConfig;
+  
   

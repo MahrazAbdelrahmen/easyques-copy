@@ -17,8 +17,6 @@ const Seemore_compo = ({ articleData, pdfId }) => {
         setLoading(false);
       } catch (error) {
 
-
-
       }
     }
     getData();

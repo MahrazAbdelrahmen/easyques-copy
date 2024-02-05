@@ -1,17 +1,19 @@
 import React from "react";
 import Navbar from "../Components/Navbar";
 import Profile_compo from "../Components/Profile_compo";
-import Register from "../Components/Register";
+import { useEffect, useState } from "react";
+import UserAPI  from "../api/user-api";
+function Profile() {
+    
 
-function Profile(params) {
   return (
     <div className="profile">
       <Navbar></Navbar>
 
-      {/* <div className="w-screen h-screen  flex items-center justify-center">
+      <div className="w-screen h-screen  flex items-center justify-center">
+
         <Profile_compo></Profile_compo>
-      </div> */}
-      <Register></Register>
+      </div>
 
     </div>
   );
