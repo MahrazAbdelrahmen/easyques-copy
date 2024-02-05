@@ -25,11 +25,15 @@ import Reg_land from "./pages/Reg_land.js";
 import Log_land from "./pages/Log_land.js";
 import Accueil from "./pages/Home";
 import Forbidden from "./pages/forbbidden.js";
+import ProfileAdmin from "./pages/ProfileAdmin.js";
+import ArticleUploader from "./pages/UploadArticle.js";
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/Profile" element={<Profile />}></Route>
+        <Route path="/ProfileAdmin" element={<ProfileAdmin />}></Route>
+
         <Route path="/User" element={<Favorites />}></Route>
         <Route path="/see-more/:articleId" element={<Seemore></Seemore>} />
         <Route path="/2" element={<SearchResult />}></Route>
@@ -48,6 +52,7 @@ function App() {
         <Route path="/edit-article/:articleId" element={<ModEditPage></ModEditPage>} />
         <Route path="/edit-article-form/:articleId" element={<ModalEditJSON />} />
         <Route path="/" element={<Landing />}></Route>
+        <Route path="/Upload" element={<ArticleUploader />}></Route>
 
         <Route path="/Settings" element={<Settings />}></Route>
         <Route path="/Favorites" element={<Favorites />}></Route>

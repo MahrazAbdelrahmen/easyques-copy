@@ -57,7 +57,9 @@ class ModeratorManager(viewsets.ModelViewSet):
             return Response({'error': 'Invalid email format'}, status=status.HTTP_400_BAD_REQUEST)
         password = secrets.token_urlsafe(8)
                
-        
+        print("password ==")
+        print(password)
+
         new_moderator = Moderator.objects.create(email=email, password= make_password(password),
                                                            first_name=first_name, last_name=last_name)
         serializer = self.get_serializer(new_moderator)

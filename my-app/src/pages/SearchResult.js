@@ -1,3 +1,4 @@
+//SearchResult.js
 import Navbar from "../Components/Navbar";
 import Filter from "../Components/Filter";
 import React, { useEffect, useState } from "react";
@@ -98,7 +99,7 @@ function SearchResult(props) {
           value={query}
           onChange={handleSearchChange}
         />
-        <button onClick={async () => { await search_article() }}>Search</button>
+        <button className="ml-4 hover:text-blue font-bold" onClick={async () => { await search_article() }}>Search</button>
       </div>
       <div className="w-[90vw] flex items-center justify-start ">
         <Filter setQuery={updateQuery}></Filter>

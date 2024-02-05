@@ -11,7 +11,27 @@
 .active {
   color: #00adb5;
 }
+.url-empty{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5%;
+}
+.url-empty p{
+  color: var(--textcolor);
+  font-weight: 700;
+  margin-top: 5%;
+  font-size: 25px;
+  display: block;
+  
+}
+.url-empty-inside{
+  display: block;
+  text-align: center;
 
+}
 .admin_part1 {
   display: flex;
   justify-content: space-between;
@@ -223,7 +243,7 @@ i {
 }
 
 .modal {
-  background: #fff;
+  background: var(--grey);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);

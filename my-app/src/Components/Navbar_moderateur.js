@@ -36,28 +36,13 @@ function Navbar_mod(params) {
           <ul className=" text-center">
             <li>
               <NavLink
-                to="/"
+                to="/ModPage"
                 className={location.pathname === "/" ? "active" : ""}
               >
                 Articles
               </NavLink>{" "}
             </li>
-            <li>
-              {" "}
-              <NavLink
-                to="/Profile"
-                className={location.pathname === "/Profile" ? "active" : ""}
-              >
-                Profile
-              </NavLink>{" "}
-            </li>
-            <li>
-              {" "}
-              <NavLink
-                to="/Favorites"
-                className={location.pathname === "/Favorites" ? "active" : ""}
-              ></NavLink>{" "}
-            </li>
+            
           </ul>
         </div>
 
@@ -77,14 +62,7 @@ function Navbar_mod(params) {
               <hr className="w-4/5" />
 
               <ul>
-                <li>
-                  <NavLink
-                    to="/Profile"
-                    className={location.pathname === "/Profile" ? "active" : ""}
-                  >
-                    <FontAwesomeIcon icon={faUser} className="h-6 " /> Profile
-                  </NavLink>{" "}
-                </li>
+                
                 <li>
                   <NavLink
                     to="/Favorites"

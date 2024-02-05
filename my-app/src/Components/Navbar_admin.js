@@ -37,8 +37,8 @@ function Navbar_Admin(params) {
           <ul>
             <li>
               <NavLink
-                to="/"
-                className={location.pathname === "/" ? "active" : ""}
+                to="/Upload"
+                className={location.pathname === "/Upload" ? "active" : ""}
               >
                 Articles
               </NavLink>{" "}
@@ -47,8 +47,8 @@ function Navbar_Admin(params) {
             <li>
               {" "}
               <NavLink
-                to="/Favorites"
-                className={location.pathname === "/Favorites" ? "active" : ""}
+                to="/Admin"
+                className={location.pathname === "/Admin" ? "active" : ""}
               >
                 moderateurs
               </NavLink>{" "}
@@ -56,8 +56,8 @@ function Navbar_Admin(params) {
             <li>
               {" "}
               <NavLink
-                to="/Profile"
-                className={location.pathname === "/Profile" ? "active" : ""}
+                to="/ProfileAdmin"
+                className={location.pathname === "/ProfileAdmin" ? "active" : ""}
               >
                 Profile
               </NavLink>{" "}

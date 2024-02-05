@@ -39,13 +39,11 @@ const ModeratorForm = ({ onClose }) => {
             await axios.post('http://localhost:8000/moderator/create/', userData);
 
             // Handle success or redirect
-            setTest("true");
             setSuccessMessage("`${response.data.username} créé avec succès. Mot de passe: ${response.data.password}`");
 
 
         } catch (error) {
             // Handle error
-            setTest("false");
 
             console.error('Error:', error);
         }
@@ -87,7 +85,6 @@ const ModeratorForm = ({ onClose }) => {
           ) : (
             // Show the form for user input
             <form onSubmit={handleSubmit}>
-                            <p>{test}</p>
 
               <div className="form-button">
                 <input

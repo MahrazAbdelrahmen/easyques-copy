@@ -1,21 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import "../Styles/Search_bar.css";
 import SearchResult from "../pages/SearchResult";
+import { useNavigate } from 'react-router-dom';
 
-const Search_bar = ({ backgroundColor  }) => {
+const Search_bar = ({ backgroundColor }) => {
   const [query, setQuery] = useState("");
   const keywords = "";
   const authors = "";
   const institutions = "";
+  const navigate = useNavigate();
+
   const handleSearch = () => {
-    SearchResult({query, keywords, authors, institutions });
+    navigate(`/Search_result`);
   };
 
   return (
     <div className="bar-search">
-      <img src="./Assets/search.png" alt="Recherche" className="search-icon" />
+      <button onClick={handleSearch}>
+        {" "}
+        <img
+          src="./Assets/search.png"
+          alt="Recherche"
+          className="search-icon"
+        />
+      </button>
+
       <input
-        id='query_r'
+        id="query_r"
         type="search"
         placeholder="Rechercher des articles scientifiques ..."
         style={{ backgroundColor: backgroundColor }}
@@ -28,7 +39,6 @@ const Search_bar = ({ backgroundColor  }) => {
           }
         }}
       />
-      <button onClick={handleSearch}>Rechercher</button>
     </div>
   );
 };

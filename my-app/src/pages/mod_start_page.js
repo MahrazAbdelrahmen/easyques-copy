@@ -36,7 +36,6 @@ const ModPage = () => {
 
     const getData = async () => {
       try {
-        await UserAPI.testForidden(UserRoles.MODERATOR, () => navigator('/forbidden'));
         const data = await ArticleAPI.fetchArticles();
         setArticles(data);
         setLoading(false);

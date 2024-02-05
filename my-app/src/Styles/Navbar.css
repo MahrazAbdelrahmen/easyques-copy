@@ -17,6 +17,9 @@
   width: 100vw;
   background-color: var(--grey);
 }
+.active{
+  color: #00adb5;
+}
 /* .logo-igl {
   display: flex;
   align-items: center;

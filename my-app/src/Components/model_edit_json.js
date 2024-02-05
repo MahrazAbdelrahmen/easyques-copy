@@ -24,10 +24,7 @@ const ModalEditJSON = ({ }) => {
 
 
     useEffect(() => {
-        const test = async () => {
-            await UserAPI.testForidden(UserRoles.ADMIN, navigator('/forbidden'));
-        }
-        test();
+       
         const fetchArticleData = async () => {
             try {
                 const data = await ArticleAPI.fetchArticle(articleID);

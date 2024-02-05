@@ -32,18 +32,12 @@ const ModEditPage = () => {
   const [showValidateModal, setShowValidateModal] = useState(false);
   const [showEditateModal, setShowEditModal] = useState(false);
   const numericArticleId = parseInt(articleId["articleId"], 10)
-  useEffect(() => {
-
-    const test = async () => {
-      await UserAPI.testForidden(UserRoles.MODERATOR, () => navigator('/forbidden'));
-    }
-    test();
-  })
+ 
   useEffect(() => {
 
     const getData = async () => {
       try {
-        await UserAPI.testForidden(UserRoles.MODERATOR, () => navigator('/forbidden'));
+       // await UserAPI.testForidden(UserRoles.MODERATOR, () => navigator('/forbidden'));
         const data = await ArticleAPI.fetchArticle(numericArticleId, true);
         const rawData = await ArticleAPI.fetchArticle(numericArticleId, false);
         setRawJsonData(rawData);
