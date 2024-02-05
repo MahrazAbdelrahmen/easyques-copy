@@ -7,7 +7,7 @@ from django.contrib.auth.hashers import check_password
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from article.serializers import *
-from elasticsearch_dsl.connections import connections
+from django.db import transaction
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -18,8 +18,7 @@ from rest_framework import status
 from UserPart.models import UserProfile
 from moderator.util import TokenModerator
 from moderator.models import Moderator
-
-connections.create_connection(alias='default', hosts=['http://elastic:ar*==+FV5XfBWpjwDy1p@localhost:9200'])
+from myApp.models import Admin
 
 
 class ModelDataReturn:
@@ -42,17 +41,36 @@ class ModelDataReturn:
         - Response: A response containing user data or an error message.
         """
         user = request.user
-        print(user)
         try:
-            user_profile = UserProfile.objects.get(user__email=user)
+
+            user_profile = Admin.objects.get(user__username=user)
+
             context = {
                 'first_name': user_profile.user.first_name,
                 'last_name': user_profile.user.last_name,
-                'email': user_profile.user.email,
+                'email': user_profile.user.username,
                 'type': "USER"
             }
+            print("hhh")
             return Response(context, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
+
+            pass
+
+        try:
+
+            user_profile = UserProfile.objects.get(user__username=user)
+
+            context = {
+                'first_name': user_profile.user.first_name,
+                'last_name': user_profile.user.last_name,
+                'email': user_profile.user.username,
+                'type': "USER"
+            }
+            print("hhh")
+            return Response(context, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+
             pass
 
         try:
@@ -71,11 +89,15 @@ class ModelDataReturn:
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def check_user_type(request):
-    
     user = request.user
+    user_profile = Admin.objects.get(user__email=user)
+    if user_profile:
+        return Response({'value': 3})
+
     user_profile = UserProfile.objects.get(user__email=user)
     if user_profile:
         return Response({'value': 1})
+
     user_profile = Moderator.objects.get(email=user)
     if user_profile:
         return Response({'value': 2})
@@ -122,38 +144,51 @@ def login_user(request):
 
     if not username or not password:
         return Response({'error': 'Both username and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
-
+    user = None
+    user_type = None
     try:
-        # Check if the user is a UserProfile
+
         UserProfile.objects.get(user__username=username)
         user = authenticate(request, username=username, password=password)
         user_type = 'user'
 
     except ObjectDoesNotExist:
 
-        user_profile = Moderator.objects.get(email=username)
+        try:
+            user_profile = Moderator.objects.get(email=username)
 
-        if user_profile is not None:
-            user = authenticate(request, email=username, password=password)
-            user_type = 'moderator'
-        else:
-            return Response({'error': 'Incorrect username or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+            if user_profile is not None:
+                user = authenticate(request, email=username, password=password)
+                user_type = 'moderator'
 
+        except ObjectDoesNotExist:
+            try:
+
+                user_profile = Admin.objects.get(user__username=username)
+                if user_profile is not None:
+                    user = authenticate(request, username=username, password=password)
+                    user_type = 'admin'
+            except ObjectDoesNotExist:
+                return Response({'error': 'Incorrect username or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+    token = ' '
     if user is not None:
         login(request, user)
 
         # Generate or retrieve the user's token
         if user_type == 'user':
+
             token, created = Token.objects.get_or_create(user=user)
             token = str(token.key)
-        else:
-            # If the user is a moderator
+        elif user_type == 'moderator':
             token = TokenModerator.generate_token_for_moderator(moderator_email=username)
+        elif user_type == 'admin':
+            token, created = Token.objects.get_or_create(user=user)
 
         # Include the token in the response
         first_name = user.first_name
         last_name = user.last_name
         message = "Login successful"
+
         return Response({'message': message, 'type': user_type,
                          'token': str(token), 'first_name': first_name,
                          'last_name': last_name}, status=status.HTTP_200_OK)
@@ -180,12 +215,26 @@ def logout_user(request):
 @permission_classes([IsAuthenticated])
 def check_user_type(request):
     user = request.user
-    user_profile = UserProfile.objects.get(user__email=user)
-    if user_profile:
+
+    try:
+        Admin.objects.get(user__username=user)
+        return Response({'value': 3})
+    except ObjectDoesNotExist:
+        pass
+
+    try:
+        UserProfile.objects.get(user__username=user)
         return Response({'value': 1})
-    user_profile = Moderator.objects.get(email=user)
-    if user_profile:
+    except ObjectDoesNotExist:
+        pass
+
+    try:
+        Moderator.objects.get(email=user)
         return Response({'value': 2})
+    except ObjectDoesNotExist:
+        pass
+
+    return Response({'value': 0})
 
 
 @api_view(['POST'])
@@ -193,15 +242,20 @@ def check_user_type(request):
 @permission_classes([IsAuthenticated])
 def update_username(request):
     new_username = request.data.get('new_username')
-    user_profile = request.user.userprofile
+
     if not new_username:
         return Response({'message': 'New username is required'}, status=400)
 
-    if User.objects.exclude(id=user_profile.id).filter(username=new_username).exists():
-        return Response({'message': 'Username already exists for another user'}, status=400)
+    user_profile = request.user.userprofile
 
-    user_profile.user.username = new_username
-    user_profile.user.save()
+    with transaction.atomic():
+        # Ensure atomicity for database operations
+        if User.objects.exclude(id=user_profile.id).filter(username=new_username).exists():
+            print("hi")
+            return Response({'message': 'Username already exists for another user'}, status=400)
+
+        user_profile.user.username = new_username
+        user_profile.user.save()
 
     return Response({'message': 'Username updated successfully'}, status=200)
 
@@ -242,16 +296,18 @@ def sign_up(request):
 
     if User.objects.filter(email=email).exists():
         return Response({'error': 'User with this email already exists'}, status=400)
-    #  password = make_password(password)
     user = User.objects.create_user(username=email, email=email, password=password, first_name=first_name,
                                     last_name=last_name)
-    UserProfile.objects.create(user=user)
+    user = UserProfile.objects.create(user=user)
+    print(user)
+    user.save()
 
     return Response({'message': 'User registered successfully'}, status=201)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def user_favorites(request):
     try:
         user_profile = request.user.userprofile
@@ -268,6 +324,7 @@ def user_favorites(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def add_to_favorites(request, article_id):
     user_profile = request.user.userprofile
 
@@ -285,6 +342,7 @@ def add_to_favorites(request, article_id):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def remove_favorite(request, article_id):
     try:
         user_profile = request.user.userprofile

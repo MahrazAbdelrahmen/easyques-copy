@@ -63,4 +63,4 @@ class UserProfile(models.Model):
         Returns:
             str: The user's name associated with the UserProfile.
         """
-        return self.user.get_attname()
+        return self.user.__str__()
