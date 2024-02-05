@@ -4,10 +4,12 @@ import Profile_compo from "../Components/Profile_compo";
 import UserAPI from "../api/user-api";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { UserRoles } from "../api/structures";
 function Profile() {
   const navigator = useNavigate();
   useEffect(() => {
     const test = async () => {
+      await UserAPI.testNonForidden(UserRoles.MODERATOR, () => navigator('/forbidden'));
       await UserAPI.nonUserTypeTest(() => navigator('/forbidden'));
     }
     test();

@@ -112,6 +112,15 @@ class UserAPI {
         }
         return;
     }
+    static async testNonForidden(role, func) {
+
+        const data = await UserAPI.checkUserType();
+
+        if (data == role) {
+            func();
+        }
+        return;
+    }
     static async nonUserTypeTest(func) {
         const tokenValue = await TokenAPI.getCookie('token');
         console.log(tokenValue == null)
@@ -121,6 +130,8 @@ class UserAPI {
 
         return;
     }
+
+    
 
     static async updatePassword(currentPassword, newPassword) {
         try {

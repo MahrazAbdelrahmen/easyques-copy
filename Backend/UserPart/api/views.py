@@ -100,6 +100,7 @@ def check_user_type(request):
     try:
         user_profile = UserProfile.objects.get(user__email=user)
         if user_profile:
+            print("dhbfhd")
             return Response({'value': 1})
     except ObjectDoesNotExist:
         pass

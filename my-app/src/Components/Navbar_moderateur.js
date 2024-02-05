@@ -45,15 +45,6 @@ function Navbar_mod(params) {
             <li>
               {" "}
               <NavLink
-                to="/Profile"
-                className={location.pathname === "/Profile" ? "active" : ""}
-              >
-                Profile
-              </NavLink>{" "}
-            </li>
-            <li>
-              {" "}
-              <NavLink
                 to="/Favorites"
                 className={location.pathname === "/Favorites" ? "active" : ""}
               ></NavLink>{" "}

@@ -1,37 +1,16 @@
-import re
-from enum import Enum
-from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Moderator
+from django.db import models
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 
-class TokenModerator:
-    """
-    Utility class for generating tokens for moderators.
+class TokenModerator(models.Model):
+    moderator = models.OneToOneField(User, on_delete=models.CASCADE)
+    token = models.CharField(max_length=40, unique=True)
 
-    Methods:
-        - generate_token_for_moderator(moderator_email): Generates an access token for the specified moderator.
-
-    Inheritance:
-        - This class does not inherit.
-
-    Relationships:
-        - Uses the `Moderator` model for token generation.
-    """
-
-    @staticmethod
-    def generate_token_for_moderator(moderator_email):
-        """
-        Generates a token for the specified moderator.
-
-        Parameters:
-            - moderator_email (str): Email of the moderator for whom the token is generated.
-
-        Returns:
-            - str: Access token as a string.
-        """
-        try:
-            moderator = Moderator.objects.get(email=moderator_email)
-            refresh = RefreshToken.for_user(moderator)
-            return str(refresh.access_token)
-        except Moderator.DoesNotExist:
-            return None  # Handling the case where the moderator doesn't exist
+    @classmethod
+    def generate_token_for_moderator(cls, moderator):
+        token, created = cls.objects.get_or_create(moderator=moderator)
+        if created:
+            token.token = Token.objects.create(user=moderator).key
+            token.save()
+        return token.token

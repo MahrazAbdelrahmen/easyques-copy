@@ -27,10 +27,10 @@ function Moderators(params) {
   const [tesst, setTesst] = useState("null");
 
   useEffect(() => {
-//    const test = async () => {  
-//      await UserAPI.testForidden(UserRoles.ADMIN, () => navigator('/forbidden'));
-//    }
-//    
+    const test = async () => {
+      await UserAPI.testForidden(UserRoles.ADMIN, () => navigator('/forbidden'));
+    }
+    test();
     
     const fetchModerators = async () => {
       try {

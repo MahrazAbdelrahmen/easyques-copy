@@ -56,10 +56,10 @@ class ModeratorManager(viewsets.ModelViewSet):
         if not EmailValidator.is_valid_email(email):
             return Response({'error': 'Invalid email format'}, status=status.HTTP_400_BAD_REQUEST)
         password = secrets.token_urlsafe(8)
-               
-        
-        new_moderator = Moderator.objects.create(email=email, password= make_password(password),
-                                                           first_name=first_name, last_name=last_name)
+
+        new_moderator = Moderator.objects.create(email=email, password=make_password(password),
+                                                 first_name=first_name, last_name=last_name)
+        new_moderator.save()
         serializer = self.get_serializer(new_moderator)
         headers = self.get_success_headers(serializer.data)
 
@@ -100,7 +100,7 @@ class ModeratorManager(viewsets.ModelViewSet):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=True, methods=['get'])
-    def show_passwords(self , request , pk=None):
+    def show_passwords(self, request, pk=None):
         """
         Displays passwords (for testing purposes).
 
@@ -142,4 +142,3 @@ class ModeratorManager(viewsets.ModelViewSet):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
