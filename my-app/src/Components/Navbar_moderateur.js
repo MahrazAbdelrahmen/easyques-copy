@@ -42,7 +42,7 @@ function Navbar_mod(params) {
                 Articles
               </NavLink>{" "}
             </li>
-
+            
           </ul>
         </div>
 
