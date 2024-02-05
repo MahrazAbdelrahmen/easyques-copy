@@ -23,6 +23,8 @@ function Login() {
       if (password == null) {
         throw Error("password Is NULL");
       }
+
+
     } catch (error) {
       notify(); toast.error("ERROR>", error);
     }
@@ -36,7 +38,6 @@ function Login() {
       body: JSON.stringify({
         username: username,
         password: password,
-
       })
     })
       .then(response => {
