@@ -3,10 +3,14 @@ import axios from 'axios';
 import "../Styles/admin.css";
 import SearchField from "../Components/SearchField";
 import Navbar_Admin from "../Components/Navbar_admin";
+import { UserRoles } from "../api/structures";
+import UserAPI from "../api/user-api";
+import { useNavigate } from "react-router-dom";
+
 
 function Moderators(params) {
   const searchPlaceholder = "Search...";
-
+  const navigator = useNavigate();
   const [searchValue, setSearchValue] = useState('');
   const [displayedUsers, setDisplayedUsers] = useState([]);
   const [activeButton, setActiveButton] = useState("All");
@@ -14,6 +18,11 @@ function Moderators(params) {
   const [moderators, setModerators] = useState([]);
 
   useEffect(() => {
+    const test = async () => {  
+      await UserAPI.testForidden(UserRoles.ADMIN, () => navigator('/forbidden'));
+    }
+    test();
+    
     const fetchModerators = async () => {
       try {
         const response = await axios.get('http://localhost:8000/moderator/ModerateurManager/');
@@ -28,14 +37,14 @@ function Moderators(params) {
 
   const users = moderators.map((moderateur) => ({
     id: moderateur.id,
-    name: moderateur.first_name +'_'+ moderateur.last_name,
+    name: moderateur.first_name + '_' + moderateur.last_name,
     title: moderateur.email,
   }));
 
   useEffect(() => {
     const updatedUsers = moderators.map((moderateur) => ({
       id: moderateur.id,
-      name: moderateur.first_name +'_'+ moderateur.last_name,
+      name: moderateur.first_name + '_' + moderateur.last_name,
       title: moderateur.email,
     }));
 
@@ -44,7 +53,7 @@ function Moderators(params) {
 
   const handleAddClick = () => {
     console.log("Add button clicked");
-    
+
   };
 
   const handleFilterClick = (title) => {
@@ -84,16 +93,16 @@ function Moderators(params) {
     try {
       const currentUser = moderators.find((user) => user.id === id);
       const currentPassword = currentUser ? currentUser.password : '';
-  
+
       // Include the current password in the request
       const requestData = {
         ...updatedUserData,
         password: currentPassword,
       };
-  
+
       // Log the data before making the request
       console.log('Updated User Data:', requestData);
-  
+
       await axios.put(`http://localhost:8000/moderator/ModerateurManager/update/${id}/`, requestData);
       setEditUserId(null);
       // You may want to fetch the updated list of users here
@@ -101,13 +110,13 @@ function Moderators(params) {
       console.error('Error updating user:', error);
     }
   };
-  
 
 
 
 
-  
-  
+
+
+
   const handleEditChange = (value, field) => {
     // Update the edited user data in the state
     const updatedUsers = displayedUsers.map((user) => {

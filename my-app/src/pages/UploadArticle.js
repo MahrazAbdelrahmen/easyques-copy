@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import ArticleAPI from '../api/article_api';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import UserAPI from '../api/user-api';
+import { UserRoles } from '../api/structures';
+import { useNavigate } from 'react-router-dom';
 const ArticleUploader = () => {
+  const navigator = useNavigate('/forbidden')
   const [url, setUrl] = useState('');
   const notify = () => toast.error();
   const handleUrlChange = (e) => {
@@ -21,6 +24,10 @@ const ArticleUploader = () => {
 
   }
   useEffect(() => {
+    const test = async () => {
+      await UserAPI.testForidden(UserRoles.ADMIN,() => navigator('/forbidden'));
+    }
+    test();
  
   },)
 

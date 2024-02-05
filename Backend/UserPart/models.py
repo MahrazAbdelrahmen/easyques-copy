@@ -41,6 +41,15 @@ class UserProfile(models.Model):
             (USER_PERMISSION, "user_only_perm"),
         ]
 
+    @property
+    def get_user(self):
+        """Returns the user"""
+        return self.user
+
+    @property
+    def get_auth(self):
+        return self.auth
+
     def __str__(self):
         """
         Returns the string representation of the UserProfile instance.
@@ -54,4 +63,4 @@ class UserProfile(models.Model):
         Returns:
             str: The user's name associated with the UserProfile.
         """
-        return self.user.name
+        return self.user.get_attname()

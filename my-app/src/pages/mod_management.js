@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-
+import UserAPI from '../api/user-api';
+import { UserRoles } from '../api/structures';
 const ModeratorList = () => {
   const [moderators, setModerators] = useState([]);
   const [data, setData] = useState([]);
+  const navigator = useNavigate();
   const [newModerator, setNewModerator] = useState({
     first_name: '',
     last_name: '',
@@ -12,6 +14,11 @@ const ModeratorList = () => {
   })
 
   useEffect(() => {
+    const test = async () => {
+      
+      await UserAPI.testForidden(UserRoles.ADMIN, () => navigator('/forbidden'));
+    }
+    test();
     fetchModerators()
   }, [])
 
@@ -90,7 +97,7 @@ const ModeratorList = () => {
             onChange={handleChange}
           />
         </label>
-       
+
         <label>
           Email:
           <input

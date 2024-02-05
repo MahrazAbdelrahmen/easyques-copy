@@ -5,6 +5,7 @@ import PdfMetaData from "../Components/pdf_meta_data";
 import { useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import UserAPI from "../api/user-api";
 import {
   faCheckCircle,
   faPen,
@@ -17,6 +18,7 @@ import Modal from "../Components/Modal";
 import ArticleAPI from "../api/article_api";
 import { useNavigate } from "react-router-dom";
 import BlockScreen from "../Components/block_screen";
+import { UserRoles } from "../api/structures";
 
 const ModEditPage = () => {
   const navigator = useNavigate();
@@ -29,12 +31,19 @@ const ModEditPage = () => {
   const [showDeleteModal, setShowModal] = useState(false);
   const [showValidateModal, setShowValidateModal] = useState(false);
   const [showEditateModal, setShowEditModal] = useState(false);
-  const numericArticleId = parseInt(articleId["articleId"], 10) 
-
+  const numericArticleId = parseInt(articleId["articleId"], 10)
   useEffect(() => {
+
+    const test = async () => {
+      await UserAPI.testForidden(UserRoles.MODERATOR, () => navigator('/forbidden'));
+    }
+    test();
+  })
+  useEffect(() => {
+
     const getData = async () => {
       try {
-
+        await UserAPI.testForidden(UserRoles.MODERATOR, () => navigator('/forbidden'));
         const data = await ArticleAPI.fetchArticle(numericArticleId, true);
         const rawData = await ArticleAPI.fetchArticle(numericArticleId, false);
         setRawJsonData(rawData);
@@ -49,6 +58,8 @@ const ModEditPage = () => {
 
     getData();
   }, [articleId]);
+
+
   const changeVisibility = () => {
     setShowModal(!showDeleteModal);
   };
@@ -151,7 +162,7 @@ const ModEditPage = () => {
           icon={faTrashCan}
           text="Delete"
         />
-        <CoolButton color="lightStartD" icon={faPen} func={() => {navigator(`/edit-article-form/${numericArticleId}`)}} text="Edit" />
+        <CoolButton color="lightStartD" icon={faPen} func={() => { navigator(`/edit-article-form/${numericArticleId}`) }} text="Edit" />
       </div>
     </div>
   );

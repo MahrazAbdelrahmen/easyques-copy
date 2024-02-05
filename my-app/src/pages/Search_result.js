@@ -1,10 +1,19 @@
 import axios from "axios";
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import UserAPI from "../api/user-api";
+import { useNavigate } from "react-router-dom";
+import { UserRoles } from "../api/structures";
 const SearchResults = () => {
   const [results, setResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // State to store the search term
+  const navigator = useNavigate();
 
+  useEffect(() => {
+    const test = async () => {
+      await UserAPI.checkUserType(UserRoles.USER, () => navigator('/forbidden'));
+    }
+    test();
+  })
   const handleSearch = async () => {
     const apiUrl = `http://localhost:8000/api/search/?q=${encodeURIComponent(searchTerm)}`;
     axios.get(apiUrl)

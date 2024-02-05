@@ -3,7 +3,8 @@ import ArticleAPI from '../api/article_api';
 import BlockScreen from './block_screen';
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-
+import UserAPI from '../api/user-api';
+import { UserRoles } from '../api/structures';
 
 const INSTITUTIONS_DATA = ["department", "name", "post_code", "settlement", "country"]
 const REFERENCE_DATA = ["raw_text", "reference_id"]
@@ -19,10 +20,14 @@ const ModalEditJSON = ({ }) => {
     const [loading, setLoading] = useState(true);
     const id_key = useParams();
     const articleID = parseInt(id_key["articleId"], 10)
-    
+
 
 
     useEffect(() => {
+        const test = async () => {
+            await UserAPI.testForidden(UserRoles.ADMIN, navigator('/forbidden'));
+        }
+        test();
         const fetchArticleData = async () => {
             try {
                 const data = await ArticleAPI.fetchArticle(articleID);
@@ -60,7 +65,7 @@ const ModalEditJSON = ({ }) => {
             ...updatedColleges[selectedCollegesIndex],
             [field]: value
         };
-        
+
         editedData.meta_data.institutions = updatedColleges;
     };
 
@@ -75,7 +80,7 @@ const ModalEditJSON = ({ }) => {
 
 
     const handleInputChange = (field, value) => {
-        
+
         setEditedData(prevData => ({
             ...prevData,
             meta_data: {
@@ -83,8 +88,8 @@ const ModalEditJSON = ({ }) => {
                 [field]: value,
             },
         }));
-        if ( field == "keywords"){ 
-            
+        if (field == "keywords") {
+
             editedData.meta_data.keywords = value;
             console.log("THIS IS : ", editedData.meta_data.keywords);
         }
@@ -130,7 +135,7 @@ const ModalEditJSON = ({ }) => {
                     <input
                         type='text'
                         defaultValue={editedData.meta_data[data]}
-                        onChange={(e) => handleInputChange(data, e.target.value)} 
+                        onChange={(e) => handleInputChange(data, e.target.value)}
                         className='input-field border-dark border-2 border-solid m-2 w-full text-dark'
                     />
                     <hr class="my-12 h-0.5 border-t-0 bg-regal-blue opacity-100 dark:opacity-50" />

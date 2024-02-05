@@ -5,7 +5,6 @@ import PdfReport from '../Components/pdf_report';
 const YourForm = () => {
     
     const handleReportSubmit = (reportData) => {
-        // Handle the submitted report data (e.g., send it to the server)
         console.log('Submitted Report:', reportData);
     };
 

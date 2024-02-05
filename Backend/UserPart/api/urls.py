@@ -9,9 +9,10 @@ urlpatterns = [
     path('sign-up/', views.sign_up),
     path('favorite-list/', views.user_favorites),
     path('check/', views.check_user_type),
-    path('remove-favorite/<int:article_id>/', views.remove_favorite),
+    path('remove-favorite/<int:article_id>/FROM openjdk:11-jre-slim', views.remove_favorite),
     path('add-favorite/<int:article_id>/', views.add_to_favorites),
     path('check/', views.check_user_type),
+    path('get-data/', views.ModelDataReturn.get_data),
 ]
 
 

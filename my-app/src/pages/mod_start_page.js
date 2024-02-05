@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ArticleContainer from "../Components/Article_Container";
 import Navbar_mod from "../Components/Navbar_moderateur";
 import ArticleAPI from "../api/article_api";
+import UserAPI from "../api/user-api";
+import { UserRoles } from "../api/structures";
+
 
 const cleanUpData = (originalData) => {
   const cleanedData = {
@@ -22,60 +25,18 @@ const cleanUpData = (originalData) => {
 };
 
 
-function getCookie(name) {
-  const cookies = document.cookie.split(';');
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i].trim();
-    if (cookie.startsWith(name + '=')) {
-      return cookie.substring(name.length + 1);
-    }
-  }
-  return null;
-}
-
-async function checkUserType() {
-  const tokenValue = getCookie('token');
-
-  if (!tokenValue) {
-    console.error('Token not found.');
-    return;
-  }
-
-  const apiUrl = 'http://127.0.0.1:8000/api/check';
-  const response = await fetch(apiUrl, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Token ${tokenValue}`,
-      'Content-Type': 'application/json',
-    }
-  });
-
-  if (response.ok) {
-    const data = await response.json();
-    const { value } = data;
-    if ( value == 1 ){
-      console.log("ejfedvgfvkdvsdkvkhgdvhhkgdvhdhgvd");
-      return;
-    }
-
-    console.log('Received value:', value);
-  } else {
-    console.log('Error:', response.status);
-  }
-}
-
-
 const ModPage = () => {
-
+  const navigator = useNavigate();
   const notify = () => toast.error();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [forbidden, setforbidden] = useState(false);
   useEffect(() => {
-  
     
+
     const getData = async () => {
       try {
+        await UserAPI.testForidden(UserRoles.MODERATOR, () => navigator('/forbidden'));
         const data = await ArticleAPI.fetchArticles();
         setArticles(data);
         setLoading(false);
@@ -84,23 +45,14 @@ const ModPage = () => {
         toast.error("ERROR HAPPENED  : " + error);
       }
     };
-    
-    const value = checkUserType();
-    console.log(value );
-    if(value == 1){
-      setforbidden(true) ;
-      console.log('hajdaaaaaaa');
-      console.log(forbidden);
-      console.log('hajdaaaaaaa');
-      return;
-    }
+   
     getData();
   }, []);
 
 
-  if(forbidden){
-     NavLink.push('/User');
-     return <div></div>
+  if (forbidden) {
+    navigator('/');
+    return <div></div>
   }
   if (loading) {
     return <ToastContainer position="bottom-center" autoClose={false} theme="dark" />;

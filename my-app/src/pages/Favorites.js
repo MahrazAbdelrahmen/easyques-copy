@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
 import Article from "../Components/Article";
-
+import UserAPI from "../api/user-api";
+import { UserRoles } from "../api/structures";
+import { useNavigate } from "react-router-dom";
 function Favorites() {
   const [favoriteArticles, setFavoriteArticles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigator = useNavigate();
+
   useEffect(() => {
+    const test = async () => {
+      
+      await UserAPI.testForidden(UserRoles.USER, () => navigator('/forbidden'));
+    }
+    test();
     const tokenValue = getCookie('token');
     
     fetch('http://127.0.0.1:8000/api/favorite-list/', {

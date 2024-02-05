@@ -1,6 +1,8 @@
 import axios from "axios";
 import apiConfig from "./apiConfig";
 import TokenAPI from "./token";
+import { UserRoles } from "./structures";
+
 class UserAPI {
     static async fetchUserData() {
         try {
@@ -18,8 +20,9 @@ class UserAPI {
             console.error('Error fetching user data:', error);
         }
     }
-    static async logoutUser(token) {
+    static async logoutUser() {
         try {
+            const token = TokenAPI.getCookie('token');
             const apiUrl = `${apiConfig.baseUrl}${apiConfig.logoutEndPoint}`;
             const response = await axios.post(apiUrl, {}, {
                 headers: {
@@ -32,6 +35,120 @@ class UserAPI {
             throw Error('Error logging out:', error)
         }
     }
+    static async updateUsername(newUsername) {
+        try {
+            const tokenValue = await TokenAPI.getCookie('token');
+            
+            const apiUrl = `${apiConfig.baseUrl}${apiConfig.changeUserNameEndPoint}`;
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${tokenValue}`
+                },
+                body: JSON.stringify({
+                    new_username: newUsername
+                })
+            });
+
+            const data = await response.json();
+
+            return data;
+
+        } catch (error) {
+            console.error('Error:', error);
+
+            document.getElementById('error-message').innerText = 'Error updating username';
+        }
+    }
+    static async checkUserType() {
+        const tokenValue = TokenAPI.getCookie('token');
+
+        if (!tokenValue) {
+            return UserRoles.OTHER
+        }
+
+        const apiUrl = `${apiConfig.baseUrl}${apiConfig.checkUserTypeEndPoint}`;
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Token ${tokenValue}`,
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const { value } = data;
+            let roleCode;
+
+            switch (value) {
+                case UserRoles.USER:
+                    roleCode = 1;
+                    break;
+
+                case UserRoles.MODERATOR:
+                    roleCode = 2;
+                    break;
+
+                case UserRoles.ADMIN:
+                    roleCode = 3;
+                    break;
+
+                default:
+                    roleCode = 4;
+            }
+
+            return roleCode;
+        } else {
+            console.log('Error:', response.status);
+        }
+    }
+    static async testForidden(role, func) {
+
+        const data = await UserAPI.checkUserType();
+        if (data != role) {
+            func();
+        }
+        return;
+    }
+    static async nonUserTypeTest(func) {
+        const tokenValue = await TokenAPI.getCookie('token');
+        console.log(tokenValue == null)
+        if (tokenValue === null) {
+            func();
+        }
+
+        return;
+    }
+
+    static async updatePassword(currentPassword, newPassword) {
+        try {
+            const tokenValue = TokenAPI.getCookie('token');
+            const apiUrl = 'http://127.0.0.1:8000/api/update-password/';
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${tokenValue}`,
+                },
+                body: JSON.stringify({
+                    current_password: currentPassword,
+                    new_password: newPassword,
+                }),
+            });
+
+            const data = await response.json();
+            console.log(data); // Log the success message
+            alert(data.message); // Display success message to the user
+        } catch (error) {
+            console.error('Error:', error);
+            // Display error message or handle it as needed
+        }
+    };
+
+
 }
 
 export default UserAPI

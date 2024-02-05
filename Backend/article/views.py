@@ -3,6 +3,9 @@ from rest_framework import generics, viewsets
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.http import FileResponse
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
+
 from .controller import CreateArticleUtil
 from .models import *
 from django.db import transaction
@@ -26,9 +29,13 @@ load_dotenv()
 UNPUBLISHED_ARTICLE_INDEX = os.environ.get("UNPUBLISHED_ARTICLE_INDEX")
 PUBLISHED_ARTICLE_INDEX = os.environ.get("ARTICLE_INDEX")
 
+key = os.environ.get("USER_PASSWORD")
+
 
 class SearchUtil:
     @staticmethod
+    @api_view(('GET',))
+    @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
     def search_articles(request, model_class, field_name, model_class_serial):
         """
         Search for articles based on various criteria such as authors, title, institutions, abstract, and keywords.
@@ -49,8 +56,12 @@ class SearchUtil:
         keywords = request.GET.get('keywords', ' ')
 
         elasticsearch_instance = ElasticSearchUtil()
+
         es = elasticsearch_instance.create_elasticsearch_instance()
 
+        es.indices.create(index='article', ignore=400)
+
+    
         body = {
             "query": {
                 "bool": {
@@ -80,6 +91,7 @@ class SearchUtil:
 
         articles = model_class.objects.filter(pk__in=article_ids)
         serializer = model_class_serial(articles, many=True)
+
         articles_count = articles.count()
 
         if articles_count == 0:
@@ -88,6 +100,7 @@ class SearchUtil:
             message = f'{articles_count} article(s) found for the search.'
 
         context = {'articles_count': articles_count, 'results': serializer.data, 'message': message}
+
         return Response(context, status=status.HTTP_200_OK)
 
     @staticmethod

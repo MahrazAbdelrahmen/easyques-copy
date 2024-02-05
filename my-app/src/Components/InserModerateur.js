@@ -1,14 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import UserAPI from '../api/user-api';
+import { UserRoles } from '../api/structures';
+import { useNavigate } from 'react-router-dom';
 const ModeratorForm = () => {
+    
     const [userData, setUserData] = useState({
         password: '',
         email: '',
         first_name: '',
         last_name: '',
     });
+   
+    const navigator = useNavigate();
+    useEffect(()=>{
 
+        const test = async () => {
+            await UserAPI.testForidden(UserRoles.ADMIN, () => navigator('/forbidden'));
+          }
+          test();
+    })
     const handleChange = (e) => {
         setUserData({ ...userData, [e.target.name]: e.target.value });
     };

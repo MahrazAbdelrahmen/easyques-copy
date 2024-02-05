@@ -1,4 +1,3 @@
-
 import os
 from datetime import datetime
 from io import BytesIO
@@ -23,7 +22,6 @@ request_data_json = ['first_name', 'last_name', 'email', 'password']
 
 
 class UploadArticlesView(View):
-
     """
     View for uploading articles.
 
@@ -108,7 +106,7 @@ class UploadArticlesView(View):
             elasticsearch_instance.get_elasticsearch_connection()
 
             url = request.GET.get('url')
-           
+
             self.download_and_store_pdf(url)
 
             self.search_and_print_results()
@@ -117,7 +115,7 @@ class UploadArticlesView(View):
 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
-    
+
     def get_pdf(self, url):
         """
             Handles the HTTP GET request for uploading articles from a PDF file.
@@ -131,15 +129,14 @@ class UploadArticlesView(View):
         try:
             elasticsearch_instance = ElasticSearchUtil()
             elasticsearch_instance.get_elasticsearch_connection()
-           
-            self.download_and_store_pdf(url)
 
+            self.download_and_store_pdf(url)
 
             return JsonResponse({'message': 'Upload réussi!'})
 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
-    
+
 
 class UploadArticlesDrive(View):
     """
@@ -155,6 +152,7 @@ class UploadArticlesDrive(View):
         Relationships:
             - Utilizes `UploadArticlesView`, `service_account`, and `MediaIoBaseDownload`.
     """
+
     def get(self, request):
         encoded_url = request.GET.get('url')
 
@@ -169,11 +167,11 @@ class UploadArticlesDrive(View):
             drive_service = build('drive', 'v3', credentials=credentials)
 
             # Extract folder ID from the folder URL using regex
-            
+
             match = re.search(r'/drive/folders/(.*?)(?:\?|$)', drive_folder_url)
 
             if not match:
-                raise FileDoesNotExist()("Invalid Google Drive folder URL")
+                raise FileDoesNotExist("Invalid Google Drive folder URL")
 
             folder_id = match.group(1)
 

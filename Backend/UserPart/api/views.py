@@ -1,9 +1,9 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
-from django.contrib.auth import  logout
+from django.contrib.auth import logout
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.hashers import check_password
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from article.serializers import *
@@ -22,6 +22,51 @@ from moderator.models import Moderator
 connections.create_connection(alias='default', hosts=['http://elastic:ar*==+FV5XfBWpjwDy1p@localhost:9200'])
 
 
+class ModelDataReturn:
+    """
+    A utility class for returning user data in a standardized format.
+    """
+
+    @staticmethod
+    @api_view(['GET'])
+    @authentication_classes([TokenAuthentication])
+    @permission_classes([IsAuthenticated])
+    def get_data(request):
+        """
+        API endpoint to retrieve user data.
+
+        Parameters:
+        - request: The HTTP request.
+
+        Returns:
+        - Response: A response containing user data or an error message.
+        """
+        user = request.user
+        print(user)
+        try:
+            user_profile = UserProfile.objects.get(user__email=user)
+            context = {
+                'first_name': user_profile.user.first_name,
+                'last_name': user_profile.user.last_name,
+                'email': user_profile.user.email,
+                'type': "USER"
+            }
+            return Response(context, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            pass
+
+        try:
+            moderator_profile = Moderator.objects.get(email=user)
+            context = {
+                'first_name': moderator_profile.get_first_name(),
+                'last_name': moderator_profile.get_last_name(),
+                'email': moderator_profile.get_email(),
+            }
+            return Response(context, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({'error': 'User profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -33,7 +78,6 @@ def check_user_type(request):
     user_profile = Moderator.objects.get(email=user)
     if user_profile:
         return Response({'value': 2})
-
 
 
 @api_view(['POST'])
@@ -64,17 +108,14 @@ def login_user(request):
     print(response.data)
     ```
 
-    Response Example:
-    ```json
-    {'message': 'Login successful', 'type': 'user', 'token': 'generated_token', 'first_name': 'John', 'last_name': 'Doe'}
-    ```
+    Response Example: ```json {'message': 'Login successful', 'type': 'user', 'token': 'generated_token',
+    'first_name': 'John', 'last_name': 'Doe'} ```
 
     Status Codes:
         - 200: Successful login
         - 400: Bad request (missing username or password)
         - 401: Unauthorized (incorrect username, password, or both)
     """
-    token = ' '
     username = request.data.get('username')
     password = request.data.get('password')
 
@@ -120,12 +161,16 @@ def login_user(request):
         return Response({'error': message}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def logout_user(request):
-    logout(request)
+    print(request)
+    try:
+        logout(request)
+    except Exception as e:
+        print(e)
+
     return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
 
 
@@ -199,7 +244,7 @@ def sign_up(request):
     #  password = make_password(password)
     user = User.objects.create_user(username=email, email=email, password=password, first_name=first_name,
                                     last_name=last_name)
-    user_profile = UserProfile.objects.create(user=user)
+    UserProfile.objects.create(user=user)
 
     return Response({'message': 'User registered successfully'}, status=201)
 

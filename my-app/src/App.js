@@ -24,6 +24,7 @@ import Seemore from "./pages/See_more.js";
 import Reg_land from "./pages/Reg_land.js";
 import Log_land from "./pages/Log_land.js";
 import Accueil from "./pages/Home";
+import Forbidden from "./pages/forbbidden.js";
 function App() {
   return (
 
@@ -32,6 +33,7 @@ function App() {
 
     <Router>
       <Routes>
+        <Route path="/Profile" element={<Profile />}></Route>
         <Route path="/User" element={<Favorites />}></Route>
         <Route path="/see-more/:articleId" element={<Seemore></Seemore>} />
         <Route path="/2" element={<SearchResult />}></Route>
@@ -39,16 +41,18 @@ function App() {
         <Route path="/4" element={<Register_page />}></Route>
         <Route path="/5" element={<Reg_land />}></Route>
         <Route path="/7" element={<cleanUpData />}></Route>
-        <Route path="/8" element={< ModEditPage/>}></Route>
-        <Route path="/9" element={< Log_land/>}></Route>
+        <Route path="/8" element={< ModEditPage />}></Route>
+        <Route path="/9" element={< Log_land />}></Route>
 
-{}
-        <Route path="/Admin" element={<Moderators/>}></Route>
+
+        { }
+        <Route path="/Admin" element={<Moderators />}></Route>
+        <Route path="/forbidden" element={< Forbidden />}></Route>
         <Route path="/Moderateur" element={<ModeratorForm />}></Route>
         <Route path="/edit-article/:articleId" element={<ModEditPage></ModEditPage>} />
         <Route path="/edit-article-form/:articleId" element={<ModalEditJSON />} />
-        <Route path="/" element={<Landing/>}></Route>
-        <Route path="/Profile" element={<Profile />}></Route>
+        <Route path="/" element={<Landing />}></Route>
+
         <Route path="/Settings" element={<Settings />}></Route>
         <Route path="/Favorites" element={<Favorites />}></Route>
         <Route path="/Login" element={<Login_page />}></Route>

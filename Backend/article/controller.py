@@ -1,39 +1,32 @@
 import json
-
-from .models import UnPublishedArticle, Author, Institution, Reference, MetaData
 import logging
 from datetime import datetime
+from .models import UnPublishedArticle, Author, Institution, Reference, MetaData
+
 
 
 class CreateArticleUtil:
     """
             Utility class for creating UnPublishedArticle instances from JSON data or Python objects.
 
-            Methods:
-            - `create_article_from_json(data, article_file)`: Create UnPublishedArticle instance from JSON data.
-            - `create_article_from_object(data, article_file)`: Create UnPublishedArticle instance from Python object.
-            - `_create_meta_data(json_data)`: Create MetaData instance.
-            - `_create_author(author_data)`: Create Author instance.
-            - `_create_institution(institution_data)`: Create Institution instance.
-            - `_create_institution_from_object(institution_data)`: Create Institution instance from Python object.
-            - `_create_reference(reference_data)`: Create Reference instance.
-            - `_create_related_objects(data, key, create_function, add_function)`: Create and add related objects to the UnPublishedArticle instance.
-            - `_create_objects(data_list, create_function, add_function)`: Create and add a list of objects to the UnPublishedArticle instance.
+            Methods: - `create_article_from_json(data, article_file)`: Create UnPublishedArticle instance from JSON 
+            data. - `create_article_from_object(data, article_file)`: Create UnPublishedArticle instance from Python 
+            object. - `_create_meta_data(json_data)`: Create MetaData instance. - `_create_author(author_data)`: 
+            Create Author instance. - `_create_institution(institution_data)`: Create Institution instance. - 
+            `_create_institution_from_object(institution_data)`: Create Institution instance from Python object. - 
+            `_create_reference(reference_data)`: Create Reference instance. - `_create_related_objects(data, key, 
+            create_function, add_function)`: Create and add related objects to the UnPublishedArticle instance. - 
+            `_create_objects(data_list, create_function, add_function)`: Create and add a list of objects to the 
+            UnPublishedArticle instance.
 
-             Example Usage:
-               ```python
-                create_util = CreateArticleUtil()
-                json_data = {
-                    'authors': [{'name': 'Author 1', 'affiliations': ['Affiliation 1', 'Affiliation 2']},
-                                {'name': 'Author 2', 'affiliations': ['Affiliation 3']}],
-                    'institutions': [{'id': '1', 'label': 'Label 1', 'name': 'Institution 1', 'country': 'Country 1' '...',
-                                     {'id': '2', 'label': 'Label 2', 'name': 'Institution 2', 'country': 'Country 2' '...'}],
-                    'references': [{'id': '1', 'year': '2022', 'article_title': 'Reference 1','volume': 'Vol 1', 'pages': '...'},
-                                   {'id': '2', 'year': '2021', 'article_title': 'Reference 2', 'volume': 'Vol 2', '...']
-                }
-                article_file = '...'
-                result = create_util.create_article_from_json(json_data, article_file)
-                ```
+             Example Usage: ```python create_util = CreateArticleUtil() json_data = { 'authors': [{'name': 'Author 
+             1', 'affiliations': ['Affiliation 1', 'Affiliation 2']}, {'name': 'Author 2', 'affiliations': [
+             'Affiliation 3']}], 'institutions': [{'id': '1', 'label': 'Label 1', 'name': 'Institution 1', 
+             'country': 'Country 1' '...', {'id': '2', 'label': 'Label 2', 'name': 'Institution 2', 'country': 
+             'Country 2' '...'}], 'references': [{'id': '1', 'year': '2022', 'article_title': 'Reference 1',
+             'volume': 'Vol 1', 'pages': '...'}, {'id': '2', 'year': '2021', 'article_title': 'Reference 2', 
+             'volume': 'Vol 2', '...'] } article_file = '...' result = create_util.create_article_from_json(
+             json_data, article_file) ```
     """
     logger = logging.getLogger(__name__)
     AUTHOR_KEY = 'authors'
@@ -297,5 +290,4 @@ class CreateArticleUtil:
             cont = result["success"]
             data = result["data"]
             if cont:
-
                 add_function(data)

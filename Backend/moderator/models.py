@@ -37,6 +37,7 @@ class ModAttributesUtil:
     def password(length=30):
         return make_password(get_random_string(length))
 
+
 class Moderator(AbstractBaseUser):
     """
     Represents a Moderator in the system.
@@ -70,3 +71,21 @@ class Moderator(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+    def get_short_name(self):
+        return self.first_name
+
+    def get_email(self):
+        return self.email
+
+    def get_auth(self):
+        return self.auth
+
+    def get_first_name(self):
+        return self.first_name
+
+    def get_last_name(self):
+        return self.last_name

@@ -51,8 +51,7 @@ function Register() {
       notify(); toast.error(data.error);
       
     }else{
-        // le cas au tous marche bien  
-        // ici il faut faire le redirect vers une autre page 
+      
       alert(data.message);
       }
        
@@ -67,11 +66,9 @@ const navigate = useNavigate();
 
   const handleSignUp = async () => {
     try {
-      console.log('h');
       await signUp();
-      console.log('hl');
       // If signUp is successful, navigate to ./Home
-      navigate('.././Home');
+      navigate('/login');
     } catch (error) {
       // Handle errors
       console.error('Error happened:', error);

@@ -11,6 +11,8 @@
     uploadDrive: '/myapp/uploadDrive/',
     getUserDataEndpoint: '/api/get-data',
     logoutEndPoint: '/api/logout/',
+    changeUserNameEndPoint:'/api/update-username/',
+    checkUserTypeEndPoint:'/api/check',
   };
   
   export default apiConfig;

@@ -4,6 +4,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ArticleContainer from "../Components/Article_Container";
 import SearchField from "../Components/SearchField";
+import { useNavigate } from "react-router-dom";
+import UserAPI from "../api/user-api";
+import { UserRoles } from "../api/structures";
 
 const cleanUpData = (originalData) => {
   console.log("data jey : ", originalData.meta_data.keyword);
@@ -27,19 +30,20 @@ const cleanUpData = (originalData) => {
 
 
 function SearchResult(props) {
+  const navigator = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('')
   var API;
 
   const updateQuery = async (newQuery) => {
-    
+
 
     const keyWords = newQuery.keywords
     const author = newQuery.authos_names
     const institutions = newQuery.institutions_names
     console.log(keyWords, author, institutions)
-    
+
     API =
       `http://127.0.0.1:8000/article/search-articles-unpublished/?authors=${author}&title=${query}&institutions=${institutions}&keywords=${keyWords}`
     try {
@@ -56,6 +60,12 @@ function SearchResult(props) {
   };
 
   useEffect(() => {
+
+    const test = async () => {
+      await UserAPI.checkUserType(UserRoles.USER, () => navigator('/forbidden'));
+    }
+    test();
+
     if (data != null) {
       setLoading(false);
     }
@@ -76,7 +86,7 @@ function SearchResult(props) {
   const handleSearchChange = (e) => {
     const newValue = e.target.value;
     setQuery(newValue);
-    
+
   };
 
   return (
