@@ -165,7 +165,7 @@ def login_user(request):
 
         try:
             user_profile = Moderator.objects.get(email=username)
-
+           
             if user_profile is not None:
                 user = authenticate(request, email=username, password=password)
                 user_type = 'moderator'
@@ -260,7 +260,6 @@ def update_username(request):
     with transaction.atomic():
         # Ensure atomicity for database operations
         if User.objects.exclude(id=user_profile.id).filter(username=new_username).exists():
-            print("hi")
             return Response({'message': 'Username already exists for another user'}, status=400)
 
         user_profile.user.username = new_username
