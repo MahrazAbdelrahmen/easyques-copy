@@ -38,7 +38,7 @@ class UserAPI {
     static async updateUsername(newUsername) {
         try {
             const tokenValue = await TokenAPI.getCookie('token');
-            
+
             const apiUrl = `${apiConfig.baseUrl}${apiConfig.changeUserNameEndPoint}`;
             const response = await fetch(apiUrl, {
                 method: 'POST',
@@ -62,11 +62,9 @@ class UserAPI {
         }
     }
     static async checkUserType() {
-        const tokenValue = TokenAPI.getCookie('token');
+        const tokenValue = await TokenAPI.getCookie('token');
 
-        if (!tokenValue) {
-            return UserRoles.OTHER
-        }
+
 
         const apiUrl = `${apiConfig.baseUrl}${apiConfig.checkUserTypeEndPoint}`;
         const response = await fetch(apiUrl, {
@@ -76,27 +74,29 @@ class UserAPI {
                 'Content-Type': 'application/json',
             }
         });
-
+        const data = await response.json();
+        console.log(data)
         if (response.ok) {
-            const data = await response.json();
+            
             const { value } = data;
             let roleCode;
 
             switch (value) {
-                case UserRoles.USER:
-                    roleCode = 1;
+                case 1:
+                    roleCode = UserRoles.USER;
                     break;
 
-                case UserRoles.MODERATOR:
-                    roleCode = 2;
+                case 2:
+                    roleCode = UserRoles.MODERATOR;
                     break;
 
-                case UserRoles.ADMIN:
-                    roleCode = 3;
+                case 3:
+                    roleCode = UserRoles.ADMIN
+                    console.log("hefbhebf : ", 3)
                     break;
 
                 default:
-                    roleCode = 4;
+                    roleCode = UserRoles.OTHER;
             }
 
             return roleCode;
@@ -107,6 +107,7 @@ class UserAPI {
     static async testForidden(role, func) {
 
         const data = await UserAPI.checkUserType();
+
         if (data != role) {
             func();
         }

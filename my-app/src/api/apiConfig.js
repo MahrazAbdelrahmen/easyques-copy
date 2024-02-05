@@ -13,6 +13,8 @@
     logoutEndPoint: '/api/logout/',
     changeUserNameEndPoint:'/api/update-username/',
     checkUserTypeEndPoint:'/api/check',
+    getFavoritesEndPoint:'/api/favorite-list/',
+      
   };
   
   export default apiConfig;

@@ -1,5 +1,8 @@
 import axios from "axios";
 import apiConfig from "./apiConfig";
+import TokenAPI from "./token";
+
+
 const cleanUpData = (originalData) => {
     const cleanedData = {
         title: originalData.meta_data.title,
@@ -18,22 +21,23 @@ const cleanUpData = (originalData) => {
     return cleanedData;
 };
 
+
 class ArticleAPI {
 
-    static async handleUpload(url){
+    static async handleUpload(url) {
         try {
-          // Envoyer l'URL au backend Django pour le traitement en utilisant une requête GET
-          const response = await axios.get(`${apiConfig.baseUrl}${apiConfig.uploadDrive}`, {
-            params: { url },
-          });
-    
-          // Afficher un message de succès ou faire d'autres actions nécessaires
-          console.log('Upload réussi!', response.data);
+            // Envoyer l'URL au backend Django pour le traitement en utilisant une requête GET
+            const response = await axios.get(`${apiConfig.baseUrl}${apiConfig.uploadDrive}`, {
+                params: { url },
+            });
+
+            // Afficher un message de succès ou faire d'autres actions nécessaires
+            console.log('Upload réussi!', response.data);
         } catch (error) {
-          console.error('Erreur lors de l\'upload', error);
-          // Gérer les erreurs et afficher un message à l'utilisateur si nécessaire
+            console.error('Erreur lors de l\'upload', error);
+            // Gérer les erreurs et afficher un message à l'utilisateur si nécessaire
         }
-      };
+    };
 
     static async fetchArticles() {
         try {
@@ -60,7 +64,7 @@ class ArticleAPI {
             }
 
             const data = response.data;
-            if ( cleanIt ) return cleanUpData(data);
+            if (cleanIt) return cleanUpData(data);
             return data;
         } catch (error) {
             console.error("Error fetching article:", error);
@@ -68,7 +72,7 @@ class ArticleAPI {
         }
     }
 
-    
+
     static async deleteArticle(currentPage) {
         try {
             const response = await axios.delete(
@@ -132,6 +136,42 @@ class ArticleAPI {
             return dataUrl;
         } catch (error) {
             console.error("Error fetching PDF:", error);
+            throw error;
+        }
+    }
+    static async getFavoriteArticles() {
+        const tokenValue = await TokenAPI.getCookie('token');
+        try {
+            const response = await fetch(`${apiConfig.baseUrl}${apiConfig.getFavoritesEndPoint}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Token ' + tokenValue,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des favoris');
+            }
+
+            const data = await response.json();
+
+            if (data.favorites.length > 0) {
+                const articles = data.favorites.map((favorite, index) => ({
+                    date: "12/12/2023",
+                    title: favorite.meta_data.title,
+                    authors: favorite.meta_data.authors[0]?.name ? favorite.meta_data.authors.map((author) => author.name).join(", ") : "",
+                    institutions: favorite.meta_data.institutions[0]?.name ? favorite.meta_data.institutions.map((institution) => institution.name).join(", ") : "",
+                    url: "http://ictinnovations.org/2010",
+                    fav: "0",
+                }));
+
+                return articles;
+            } else {
+                throw new Error("Aucune favori trouvée");
+            }
+        } catch (error) {
+            console.error('Erreur lors de la récupération des favoris:', error);
             throw error;
         }
     }

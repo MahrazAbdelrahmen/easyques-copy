@@ -10,7 +10,7 @@ const SearchResults = () => {
 
   useEffect(() => {
     const test = async () => {
-      await UserAPI.checkUserType(UserRoles.USER, () => navigator('/forbidden'));
+      await UserAPI.testForidden(UserRoles.USER, () => navigator('/forbidden'));
     }
     test();
   })
