@@ -90,17 +90,26 @@ class ModelDataReturn:
 @permission_classes([IsAuthenticated])
 def check_user_type(request):
     user = request.user
-    user_profile = Admin.objects.get(user__email=user)
-    if user_profile:
-        return Response({'value': 3})
+    try:
+        user_profile = Admin.objects.get(user__email=user)
+        if user_profile:
+            return Response({'value': 3})
+    except ObjectDoesNotExist:
+        pass
 
-    user_profile = UserProfile.objects.get(user__email=user)
-    if user_profile:
-        return Response({'value': 1})
+    try:
+        user_profile = UserProfile.objects.get(user__email=user)
+        if user_profile:
+            return Response({'value': 1})
+    except ObjectDoesNotExist:
+        pass
 
-    user_profile = Moderator.objects.get(email=user)
-    if user_profile:
-        return Response({'value': 2})
+    try:
+        user_profile = Moderator.objects.get(email=user)
+        if user_profile:
+            return Response({'value': 2})
+    except ObjectDoesNotExist:
+        pass
 
 
 @api_view(['POST'])

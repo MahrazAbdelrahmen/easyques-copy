@@ -1,4 +1,3 @@
-// src/components/EditForm.js
 import React, { useState } from 'react';
 import "../Styles/moderateurForm.css";
 
@@ -24,18 +23,28 @@ const EditForm = ({ initialData, onClose, onSubmit }) => {
 
     <form onSubmit={handleSubmit}>
       <div className="form-button">
-        <label>Name:</label>
+
         <input
           type="text"
-          name="username"
-          value={editData.username}
+          name="first_name"
+          value={editData.first_name}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="form-button">
+
+        <input
+          type="text"
+          name="last_name"
+          value={editData.last_name}
           onChange={handleChange}
           required
         />
       </div>
 
       <div className="form-button">
-        <label>Email:</label>
+
         <input
           type="email"
           name="email"

@@ -7,7 +7,6 @@ class UserAPI {
     static async fetchUserData() {
         try {
             const tokenValue = await TokenAPI.getCookie('token');
-            console.log("token : ", tokenValue);
             const apiUrl = `${apiConfig.baseUrl}${apiConfig.getUserDataEndpoint}`;
             const headers = {
                 'Authorization': `Token ${tokenValue}`,
