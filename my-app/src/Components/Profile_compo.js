@@ -128,7 +128,7 @@ function Profile_compo() {
     }
   };
   return (
-    <div className="profile_Compo relative rounded-3xl md:w-[70vw] lg:w-[55vw]   w-[90vw]  h-[80vh] mt-10 grid justify-items-center content-center">
+    <div className="profile_Compo relative rounded-3xl md:w-[70vw] lg:w-[55vw]   w-[90vw]  h-[70vh]  grid justify-items-center content-center">
       <div className="profile-co absolute rounded-3xl w-full bottom-0 h-5/6 lg:h-[60vh] "></div>
       <div className="profile absolute bottom-12 lg:h-[60vh] h-5/6 ">
         <ToastContainer></ToastContainer>
@@ -137,8 +137,7 @@ function Profile_compo() {
           <div className="pro-nom grid content-center ml-10 ">
             {" "}
             <h1
-              className="
-            "
+              className=" font-bold"
             >
               {userData.firstName ? userData.firstName : "Loading"}
             </h1>
@@ -223,29 +222,25 @@ function Profile_compo() {
               readOnly={!isEditingFull.password}
             />
           </div>
+          <hr className="border-t border-darkgrey md:w-[550px] w-[90%] items-center" />
+          <div className="logout">
+        <div className="flex items-center">
+
+         <button onClick={async () => { await handleLogout(); navigator('/') }} className="mt-3 mr-3">
+          <FontAwesomeIcon className="logout-icon" icon={faDoorOpen} alt="Logout" />
+          <p className="ml-2">Logout</p>
+         </button>
+
+         <button onClick={async () => { await handleSaveClick(); alert("You must Log Back In"); navigator("/login") }} className="mt-3 ">
+          <FontAwesomeIcon className="Save-icon" icon={faSave} alt="Save"  />
+          <p className="ml-2">Save</p>
+         </button>
         </div>
-        <hr className="border-t border-darkgrey md:w-[550px] w-[90%] items-center" />
-        {" "}
-        <div className="logout">
-          <div className="flex-row">
-            <button onClick={async () => { await handleLogout(); navigator('/') }} className="mt-10">
-              <FontAwesomeIcon
-                className="logout-icon"
-                icon={faDoorOpen}
-                alt="Logout"
-              />
-              <p className="ml-2">Logout</p>
-            </button>
-            <button onClick={async () => { await handleSaveClick(); alert("You must Log Back In"); navigator("/login") }} className="mt-3">
-              <FontAwesomeIcon
-                className="Save-icon"
-                icon={faSave}
-                alt="Save"
-              />
-              <p className="ml-2">Save</p>
-            </button>
-          </div>
+       </div>
         </div>
+   
+
+
       </div>{" "}
     </div>
   );

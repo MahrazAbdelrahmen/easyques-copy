@@ -27,10 +27,6 @@ import Accueil from "./pages/Home";
 import Forbidden from "./pages/forbbidden.js";
 function App() {
   return (
-
-
-
-
     <Router>
       <Routes>
         <Route path="/Profile" element={<Profile />}></Route>
