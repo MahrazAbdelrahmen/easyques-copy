@@ -13,7 +13,6 @@ import { BrowserRouter as Router, Routes, Route, Switch } from "react-router-dom
 import "./index.css";
 import ModPage from "./pages/mod_start_page.js";
 import ModEditPage from "./pages/mod_edit_page.js";
-import YourForm from "./pages/Editor.js";
 import ModeratorForm from "./Components/InserModerateur.js";
 import ModalEditJSON from "./Components/model_edit_json.js";
 import Moderators from './pages/moderators.js'
@@ -22,6 +21,7 @@ import SearchResult from "./pages/SearchResult.js";
 import SearchResults from "./pages/Search_result.js";
 import Seemore from "./pages/See_more.js";
 import Reg_land from "./pages/Reg_land.js";
+import ArticleUploader from "./pages/UploadArticle.js";
 import Log_land from "./pages/Log_land.js";
 import Accueil from "./pages/Home";
 import Forbidden from "./pages/forbbidden.js";
@@ -61,6 +61,7 @@ function App() {
         <Route path="/Search_result" element={<SearchResult />}></Route>
         <Route path="/ModPage" element={<ModPage />}></Route>
         <Route path="/Home" element={<Accueil />}></Route>
+        <Route path="/upload" element={<ArticleUploader />}></Route>
       </Routes>
     </Router>
 

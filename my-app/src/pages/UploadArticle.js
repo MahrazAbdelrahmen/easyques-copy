@@ -14,13 +14,12 @@ import AddContainer from "../Components/AddContainer";
 import ModeratorForm from "../Components/InserModerateur";
 
 const ArticleUploader = () => {
-  const navigator = useNavigate('/forbidden')
   const [url, setUrl] = useState('');
   const notify = () => toast.error();
   const handleUrlChange = (e) => {
     setUrl(e.target.value);
   };
-  const handleUpload = async () =>{
+  const handleUpload = async () => {
     try {
       await ArticleAPI.handleUpload(url);
       notify();
