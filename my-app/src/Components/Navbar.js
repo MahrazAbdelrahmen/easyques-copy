@@ -37,7 +37,7 @@ function Navbar(params) {
           <ul>
             <li>
               <NavLink
-                to="/"
+                to=".././Home"
                 className={location.pathname === "/" ? "active" : ""}
               >
                 Home

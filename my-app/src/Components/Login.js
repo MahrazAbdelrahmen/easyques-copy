@@ -59,7 +59,7 @@ function Login() {
 
           if (data.type == 'user') {
             // utilisateur normale
-            navigate('/Profile')
+            navigate('.././Home')
           }
           else {
             if (data.type == 'moderator') {
