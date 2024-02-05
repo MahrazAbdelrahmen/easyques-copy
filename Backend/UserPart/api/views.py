@@ -71,6 +71,7 @@ class ModelDataReturn:
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def check_user_type(request):
+    
     user = request.user
     user_profile = UserProfile.objects.get(user__email=user)
     if user_profile:

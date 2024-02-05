@@ -1,3 +1,5 @@
+//Moderateur.js
+
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import "../Styles/admin.css";
@@ -6,7 +8,9 @@ import Navbar_Admin from "../Components/Navbar_admin";
 import { UserRoles } from "../api/structures";
 import UserAPI from "../api/user-api";
 import { useNavigate } from "react-router-dom";
-
+import EditForm from "../Components/EditForm";
+import AddContainer from "../Components/AddContainer";
+import ModeratorForm from "../Components/InserModerateur";
 
 function Moderators(params) {
   const searchPlaceholder = "Search...";
@@ -16,12 +20,17 @@ function Moderators(params) {
   const [activeButton, setActiveButton] = useState("All");
   const [editUserId, setEditUserId] = useState(null); // Track the user being edited
   const [moderators, setModerators] = useState([]);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [deletingUserId, setDeletingUserId] = useState(null);
+  const [tesst, setTesst] = useState("null");
 
   useEffect(() => {
-    const test = async () => {  
-      await UserAPI.testForidden(UserRoles.ADMIN, () => navigator('/forbidden'));
-    }
-    test();
+//    const test = async () => {  
+//      await UserAPI.testForidden(UserRoles.ADMIN, () => navigator('/forbidden'));
+//    }
+//    
     
     const fetchModerators = async () => {
       try {
@@ -52,8 +61,33 @@ function Moderators(params) {
   }, [moderators]);
 
   const handleAddClick = () => {
-    console.log("Add button clicked");
+    setShowAddModal(true);
+  };
+  const handleCloseAddModal = () => {
+    setShowAddModal(false);
+  };
+  const handleDeleteClick = (id) => {
+    setDeletingUserId(id);
+    setShowDeleteConfirmation(true);
+  };
+  const handleConfirmDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:8000/ModerateurManager/${deletingUserId}/`);
+      const updatedUsers = displayedUsers.filter((user) => user.id !== deletingUserId);
+      setDisplayedUsers(updatedUsers);
+      setTesst("true");
+    } catch (error) {
+      setTesst("false");
 
+      console.error('Error deleting user:', error);
+    } finally {
+      setShowDeleteConfirmation(false);
+      setDeletingUserId(null);
+    }
+  };
+  const handleCancelDelete = () => {
+    setShowDeleteConfirmation(false);
+    setDeletingUserId(null);
   };
 
   const handleFilterClick = (title) => {
@@ -62,15 +96,7 @@ function Moderators(params) {
     setDisplayedUsers(filteredUsers);
   };
 
-  const handleDeleteClick = async (id) => {
-    try {
-      await axios.delete(`http://localhost:8000/moderator/ModerateurManager/${id}/`);
-      const updatedUsers = displayedUsers.filter((user) => user.id !== id);
-      setDisplayedUsers(updatedUsers);
-    } catch (error) {
-      console.error('Error deleting user:', error);
-    }
-  };
+ 
 
   const handleShowPasswordClick = async (id) => {
     try {
@@ -84,7 +110,8 @@ function Moderators(params) {
 
   const handleEditClick = (id) => {
     setEditUserId(id);
-    // Implement logic to open a form for editing the user
+    const userToEdit = displayedUsers.find((user) => user.id === id);
+    setEditingUser(userToEdit);
   };
 
 
@@ -103,19 +130,14 @@ function Moderators(params) {
       // Log the data before making the request
       console.log('Updated User Data:', requestData);
 
-      await axios.put(`http://localhost:8000/moderator/ModerateurManager/update/${id}/`, requestData);
+      await axios.put(`http://localhost:8000/ModerateurManager/update/${id}/`, requestData);
       setEditUserId(null);
+      setEditingUser(null);
       // You may want to fetch the updated list of users here
     } catch (error) {
       console.error('Error updating user:', error);
     }
   };
-
-
-
-
-
-
 
   const handleEditChange = (value, field) => {
     // Update the edited user data in the state
@@ -143,12 +165,14 @@ function Moderators(params) {
   return (
     <div className="admin">
       <Navbar_Admin />
+
+      {/**Search&add button */}
       <div className="admin_part1">
         <div className="search-add">
           <SearchField
             placeholder={searchPlaceholder}
             value={searchValue}
-            onChange={handleSearchChange}
+            onChange={(e) => handleSearchChange(e)}
           />
           <button className="add-button" onClick={handleAddClick}>
             <div>
@@ -158,75 +182,95 @@ function Moderators(params) {
           </button>
         </div>
       </div>
+
+      {/**Users List */}
       <div className="admin_part1">
-        <div className="filter">
-          <button
-            className={`all-button ${activeButton === "All" ? "active-button" : "inactive-button"}`}
-            onClick={() => handleFilterClick("All")}
-          >
-            <p>All</p>
-          </button>
-          <button
-            className={`mod-button ${activeButton === "Moderator" ? "active-button" : "inactive-button"}`}
-            onClick={() => handleFilterClick("Moderator")}
-          >
-            <p>Moderateurs</p>
-          </button>
+        <div className="user-list">
+          {displayedUsers.slice().reverse().map((user) => (
+            <div key={user.id} className="user-item">
+              {/* First Column: User Name and Email */}
+              <div className="user-info">
+                <p className={`user-name ${editUserId === user.id ? 'bold-text' : ''}`}>
+                  {user.name}
+                </p>
+                <p className="user-mail">
+                  {user.title}
+                </p>
+              </div>
+
+              {/* Second Column: Show Password Button */}
+              <div className="user-action">
+               
+                  <button className="show-password-button" onClick={() => handleShowPasswordClick(user.id)}>
+                    Show Password
+                  </button>
+                
+              </div>
+
+              {/* Third Column: Delete, Edit and Threepoint Buttons */}
+              <div className="user-action">
+                
+                  <>
+                    <button className="delete-button" onClick={() => handleDeleteClick(user.id)}>
+                      <img className="delete_img" src="./Assets/trash.svg" alt="Trash Icon" />
+                    </button>
+                    <button className="edit-button" onClick={() => handleEditClick(user.id)}>
+                      <img className="edit_img" src="./Assets/treepoint.svg" alt="Treepoint Icon" />
+                    </button>
+                  </>
+                
+              </div>
+
+              {/* Edit Form */}
+              {editingUser && editUserId === user.id && (
+                <div className="edit-form">
+                  {/* You can reuse the ModeratorForm or create a separate EditForm component */}
+                  <EditForm
+                    initialData={{ username: editingUser.name, email: editingUser.title }}
+                    onClose={() => {
+                      setEditingUser(null);
+                      setEditUserId(null);
+                    }}
+                    onSubmit={(updatedData) => handleEditSubmit(user.id, updatedData)}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
-      <div className="admin_part1">
-        <table className="user-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="table-header">
-              <td colSpan="2"></td>
-            </tr>
-            {displayedUsers.map((user) => (
-              <tr key={user.id}>
-                <td>{editUserId === user.id ? (
-                  <input
-                    type="text"
-                    value={user.name}
-                    onChange={(e) => handleEditChange(e.target.value, 'name')}
-                  />
-                ) : user.name}</td>
-                <td>{editUserId === user.id ? (
-                  <input
-                    type="text"
-                    value={user.title}
-                    onChange={(e) => handleEditChange(e.target.value, 'title')}
-                  />
-                ) : user.title}</td>
-                <td>
-                  {editUserId === user.id ? (
-                    <button onClick={() => handleEditSubmit(user.id, { username: user.name, email: user.title })}>
-                      Submit
-                    </button>
-                  ) : (
-                    <>
-                      <button className="show-password-button" onClick={() => handleShowPasswordClick(user.id)}>
-                        Show Password
-                      </button>
-                      <button className="delete-button" onClick={() => handleDeleteClick(user.id)}>
-                        <img className="delete_img" src="./Assets/trash.svg" alt="Trash Icon" />
-                      </button>
-                      <button className="edit-button" onClick={() => handleEditClick(user.id)}>
-                        <img className="edit_img" src="./Assets/treepoint.svg" alt="Treepoint Icon" />
-                      </button>
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+      {/** Add Container */}
+      
+      {showAddModal && <div className="overlay">
+      <div className="modal">
+        
+      <ModeratorForm onClose={handleCloseAddModal} />
       </div>
+    </div>}
+
+      {/** Delete Confirmation Modal */}
+      
+      
+      
+      {showDeleteConfirmation && <div className="overlay">
+      <div className="modal">
+      <div className="confirmation-modal">
+        <p className="text-blue">{tesst}</p>
+        <div><p className='delete-msg'>Are you sure you want to delete it?</p></div>
+        
+        <div className="confirmation-buttons">
+          
+          <button className="delete-yes"onClick={handleConfirmDelete}>Delete</button>
+          <button className="delete-no" onClick={handleCancelDelete}>Cancel</button>
+        </div>
+      </div> 
+        
+      </div>
+      </div>
+      }
+      
+      
     </div>
   );
 }
