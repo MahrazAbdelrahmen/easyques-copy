@@ -139,6 +139,56 @@ class ArticleAPI {
             throw error;
         }
     }
+    static async add_favorite(articleId) {
+        const tokenValue = await TokenAPI.getCookie('token');
+        try {
+
+            const response = await axios.post(
+                `${apiConfig.baseUrl}${apiConfig.addFavorite}${articleId}/`,
+                null,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${tokenValue}`,
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des favoris');
+            }
+
+        } catch (error) {
+            console.error('Erreur lors de la récupération des favoris:', error);
+            throw error;
+        }
+    }
+    static async remove_favorite(articleId) {
+        const tokenValue = await TokenAPI.getCookie('token');
+        try {
+            const response = await axios.delete(
+                `${apiConfig.baseUrl}${apiConfig.removeFavorite}${articleId}/`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${tokenValue}`,  // Include your authentication token if required
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des favoris');
+            }
+
+            const data = await response.json();
+
+            return data;
+
+        } catch (error) {
+            console.error('Erreur lors de la récupération des favoris:', error);
+            throw error;
+        }
+    }
     static async getFavoriteArticles() {
         const tokenValue = await TokenAPI.getCookie('token');
         try {

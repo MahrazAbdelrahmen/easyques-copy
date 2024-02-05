@@ -44,7 +44,7 @@ function Login() {
         return response.json();
       })
       .then(data => {
-        // Afficher le message de succès
+        
 
 
         if (data.error) {
@@ -56,10 +56,10 @@ function Login() {
 
           var tokenValue = getCookie('token');
           
-
+          
 
           if (data.type == 'user') {
-            // utilisateur normale
+            
             navigate('.././Home')
           }
           else {
@@ -69,7 +69,7 @@ function Login() {
               navigate('/Moderateur')
             }
             else {
-              //  admin
+              console.log("uydvhdvf : ", data.type);
               navigate('/Admin')
             }
           }
@@ -103,7 +103,7 @@ function Login() {
   const handleSubmit = (event) => {
     event.preventDefault();
   };
-
+  console.log("hdvhvfdvhgdvhgdvkdhvbfhdvgh");
   return (
     <div className="login m-w-[40vw] m-h-[60vh] truncate grid content-center justify-items-center">
       <div className="login-container flex items-center justify-center h-[70vh] sm:w-3/5 md:w-2/5 w-4/5 rounded-2xl my-8 ">

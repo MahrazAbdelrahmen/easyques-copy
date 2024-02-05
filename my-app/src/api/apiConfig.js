@@ -14,7 +14,8 @@
     changeUserNameEndPoint:'/api/update-username/',
     checkUserTypeEndPoint:'/api/check',
     getFavoritesEndPoint:'/api/favorite-list/',
-      
+    addFavorite:'/api/add-favorite/',
+    removeFavorite:'/api/remove-favorite/'
   };
   
   export default apiConfig;

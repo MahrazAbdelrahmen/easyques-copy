@@ -6,14 +6,13 @@ import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis, faCircle, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { BsCloudDownload } from "react-icons/bs";
-
+import ArticleAPI from '../api/article_api';
 const Article = ({ key, articleData }) => {
   const navigator = useNavigate();
   const { title, authors, url, institutions, date, id } = articleData;
   const [dropdownVisible, setDropdownVisible] = useState();
-  //favorite est un booleen qui prend la veulr false:si article non ajoute aux favorites et true:si article ajoute aux favorites
   const [favorite, setFavorite] = useState(false);
-
+  const [loading, setLoading] = useState(true);
 
   const dropdownOff = (event) => {
     setDropdownVisible(false);
@@ -22,10 +21,23 @@ const Article = ({ key, articleData }) => {
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
-  const toggleFavorite = () => {
+  const toggleFavorite = async () => {
     articleData.fav = !favorite ? '1' : '0';
 
     setFavorite(!favorite);
+    try {
+      if (favorite) {
+        setLoading(false);
+        await ArticleAPI.add_favorite(id);
+        setLoading(true);
+      } else {
+        setLoading(false);
+        await ArticleAPI.remove_favorite(id);
+        setLoading(true);
+      }
+    } catch (error) {
+      
+    }
     console.log("Liked:", favorite);
   }
   return (
@@ -49,10 +61,10 @@ const Article = ({ key, articleData }) => {
           <button><BsCloudDownload size='25px' /></button>
 
           {favorite ? (
-            <img src="./Assets/white-heart.png" className='h-6 cursor-pointer' alt="" onClick={toggleFavorite} />
+            <img src="./Assets/white-heart.png" className='h-6 cursor-pointer' alt="" onClick={()=>{toggleFavorite();}} />
 
           ) : (
-            <img src="./Assets/heart.png" className='h-6 cursor-pointer' alt="" onClick={toggleFavorite} />
+            <img src="./Assets/heart.png" className='h-6 cursor-pointer' alt="" onClick={()=>{toggleFavorite();}} />
           )}
 
           <button onClick={toggleDropdown} className='cursor-pointer'>
@@ -64,11 +76,11 @@ const Article = ({ key, articleData }) => {
                 <a href='#'>Download</a>
               </div>
               <div className='mod_article_text'>
-                <button 
-                onClick={() =>{
+                <button
+                  onClick={() => {
                     navigator(`/see-more/${id}`)
-                }} 
-                href='#' className='text-red-500'>
+                  }}
+                  href='#' className='text-red-500'>
                   See more
                 </button>
               </div>
